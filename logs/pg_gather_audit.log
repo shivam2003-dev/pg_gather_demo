@@ -1,0 +1,48 @@
+==========================================
+pg_gather capture
+Timestamp  : 2026-03-17 18:51:31 IST
+Run by     : shivamkumar@192.168.1.9
+Target DB  : labdb@pg_gather_db
+Report     : report_prodsafe_20260317_185131.html
+==========================================
+ Container pg_gather_db  Running
+**Dropping pg_gather tables**
+**Creating pg_gather tables**
+Query buffer reset (cleared).
+COPY 2
+Tuples only is on.
+Query buffer reset (cleared).
+COPY 1
+COPY 5
+COPY 4
+COPY 368
+COPY 38
+COPY 0
+COPY 1
+COPY 139
+COPY 194
+COPY 125
+COPY 0
+COPY 43
+COPY 48
+COPY 0
+COPY 5
+COPY 4
+COPY 59
+COPY 6
+COPY 0
+COPY 0
+COPY 0
+COPY 0
+COPY 1
+COPY 1
+COPY 1
+COPY 22
+COPY 1
+ANALYZE
+Report: /reports/report_prodsafe_20260317_185131.html
+Size  : 200K
+Completed  : 2026-03-17 18:51:59 IST
+Duration   : 28s
+Exit code  : 0
+

@@ -1,0 +1,5185 @@
+<!DOCTYPE html>
+<html><meta charset="utf-8" />
+<style>
+#finditem,#paramtune,table {box-shadow: 0px 20px 30px -10px grey; margin: 2em; caption {font:large bold; text-align:left; white-space: nowrap; span {font: italic bold 1.7em Georgia, serif}}}
+table, th, td { border: 1px solid #6FAEBF; border-spacing: 0; padding: 4px;position: relative; }
+th {background-color: #d2f5ff;cursor: pointer; position:sticky; top:1em; border-color: #4F8E9F;z-index: 1}
+tr:nth-child(even) {background-color: #eef8ff}
+c { display: block }
+c:hover,li:hover { background-color: #DFD; text-shadow: #800 0.5px 0 0.5px; }
+a:hover,tr:hover { background-color: #EBFFDA}
+ol { width: fit-content;}
+.warn { font-weight:bold; background-color: #FBA }
+.high { border: 5px solid red;font-weight:bold}
+.lime { font-weight:bold;background-color: #FFD}
+.lineblk {float: left; margin:2em }
+.thidden tr { td:nth-child(2),th:nth-child(2) {display: none} td:first-child {color:blue}}
+.bar {display:inline-block; border: 7px outset brown; border-width:7px 0; margin:0 5px;box-shadow: 2px 2px grey;} /* bar for graph */
+#bottommenu { position: fixed; right: 0px; bottom: 0px; padding: 5px; border : 2px solid #AFAFFF; border-radius: 5px; z-index: 3}
+#cur { font: 5em arial; position: absolute; color:brown; animation: vanish 2s ease forwards; z-index: 3 } /*sort indicator*/
+#dtls,#finditem,#paramtune,#menu { font-weight:initial;line-height:1.5em;position:absolute;background-color:#FAFFEA;border: 2px solid blue; border-radius: 5px; padding: 1em;box-shadow: 0px 20px 30px -10px grey; z-index: 2}
+#dtls { left:100%; top: 4%; width: max-content; max-width: 60vw; color: black; z-index: 4}
+@keyframes vanish { from { opacity: 1;} to {opacity: 0;} }
+summary { padding: 1rem; font: bold 1.2em arial; cursor: pointer }
+footer { text-align: center; padding: 3px; background-color:#d2f2ff}
+.bar-chart { display: flex; justify-content: space-between; align-items: flex-end; height: 300px; padding-bottom: 5px; gap: 10px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1; position: relative;}
+.vbar { width: 80%; max-width: 100px; background-color: #3b82f6; border-radius: 4px 4px 0 0; position: relative;}
+.vbar span { display: block; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);}
+</style>
+<h1>
+<svg width="10em" viewBox="0 0 140 80">
+<path fill="none" stroke="#000000" stroke-linecap="round" stroke-width="2" d="m 21.2,46.7 c 1,2 0.67,4 -0.3,5.1 c -1.1,1 -2,1.5 -4,1 c -10,-3 -4,-25 -4 -25 c 0.6,-10 8,-9 8 -9 s 7,-4.5 11,0.2 c 1.2,1.4 1.7,3.3 1.7,5.17 c -0.1,3 3,7 -2,10 c-2,2 -1,5 -8,5.5 m -2 -12 c 0,0 -1,1 -0.2,0.2 m -4 12 c 0,0 0,10 -12,11"/>
+<text x="30" y="50" style="font:25px arial">gGather</text>
+<text x="60" y="62" style="fill:red; font:15px arial">Report</text>
+</svg>
+<b id="busy" class="warn"> Loading... </b>
+</h1>
+<table border="1" id="tblgather" class="lineblk">
+  <tr>
+    <th align="center">pg_gather</th>
+    <th align="center">Report</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">Client</td>
+    <td align="left">172.28.0.3/32</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Client conn.</td>
+    <td align="left">You are connected to database &quot;labdb&quot; as user &quot;pgadmin&quot; on host &quot;pg_gather_db&quot; (address &quot;172.28.0.2&quot;) at port &quot;5432&quot;.</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Collected At</td>
+    <td align="left">2026-03-17 13:22:16.37674+00 (Etc/UTC)</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Collected By</td>
+    <td align="left">pgadmin - pg_gather.V33</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Current LSN</td>
+    <td align="left">0/2FF82320</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">In recovery?</td>
+    <td align="left">false</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Last Reload</td>
+    <td align="left">2026-03-17 12:35:05.92861+00 (00:47:10.44813)</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Last Startup</td>
+    <td align="left">2026-03-17 12:35:05.942694+00 (00:47:10.434046)</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Latest xid</td>
+    <td align="left">1918</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Oldest xid ref</td>
+    <td align="left">1918</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">PG Bin Dir.</td>
+    <td align="left">/usr/lib/postgresql/16/bin</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Server</td>
+    <td align="left">172.28.0.2/32</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Server build</td>
+    <td align="left">PostgreSQL 16.13 (Debian 16.13-1.pgdg12+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">System</td>
+    <td align="left">ID: 7618202100086321190 Since: 2026-03-17 12:34:58+00 (00:47:18.37674)</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Time Line</td>
+    <td align="left">1 (Hex:1)</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">WAL file</td>
+    <td align="left">00000001000000000000002F</td>
+  </tr>
+</table>
+
+<table border="1" id="dbs" class="thidden">
+  <caption></caption>
+  <tr>
+    <th align="center">DB Name</th>
+    <th align="center">concat</th>
+    <th align="center">Avg.Commits</th>
+    <th align="center">Avg.Rollbacks</th>
+    <th align="center">Avg.DMLs</th>
+    <th align="center">Cache hit ratio</th>
+    <th align="center">Avg.Temp Files</th>
+    <th align="center">Avg.Temp Bytes</th>
+    <th align="center">DB size</th>
+    <th align="center">Age</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">postgres</td>
+    <td align="left">0,0,0,2026-03-17 12-35-06,5,0,UTF8,en_US.utf8</td>
+    <td align="right">110</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">98</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">7666711</td>
+    <td align="right">1195</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">labdb</td>
+    <td align="left">200069,45,160000,2026-03-17 12-35-06,16384,0,UTF8,en_US.utf8</td>
+    <td align="right">926</td>
+    <td align="right">7</td>
+    <td align="right">360114</td>
+    <td align="right">99</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">182811671</td>
+    <td align="right">1195</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">template1</td>
+    <td align="left">0,0,0,2026-03-17 12-35-06,1,0,UTF8,en_US.utf8</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">7504399</td>
+    <td align="right">1195</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">template0</td>
+    <td align="left">0,0,0,2026-03-17 12-35-06,4,0,UTF8,en_US.utf8</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">7504399</td>
+    <td align="right">1195</td>
+  </tr>
+</table>
+
+<div id="paramrecs">
+<details style="clear: left; border: 2px solid #b3aeae; border-radius: 5px; padding: 1em;margin: 2em;">
+<summary style="font: italic bold 2em Georgia">Parameter Recommendations</summary>
+<fieldset style="border: 2px solid blue; border-radius: 5px; padding: 1em; width: fit-content;">
+<legend>Inputs</legend>
+<label for="cpus">CPUs:
+<input type="number" id="cpus" name="cpus" value="4">
+</label>
+<label for="mem" style="padding-left: 3em;">Memory(GB):
+<input type="number" id="mem" name="mem" value="8">
+</label>
+<label for="strg" style="padding-left: 3em;"> Storage:
+<select id="strg" name="strg">
+<option value="ssd">SSD/NVMe</option>
+<option value="san">SAN</option>
+<option value="mag">Magnetic</option>
+</select>
+</label>
+<label for="wrkld" style="padding-left: 3em;"> Work load:
+<select id="wrkld" name="wrkld">
+<option value="oltp">OLTP</option>
+<option value="olap">OLAP/DSS</option>
+<option value="mixed">Mixed</option>
+</select>
+</label>
+<label for="flsys" style="padding-left: 3em;"> Filesystem:
+<select id="flsys" name="flsys">
+<option value="rglr">Regular (like: ext4/xfs)</option>
+<option value="cow">COW (like: zfs/btrfs)</option>
+</select>
+</label>
+<p>☛ Please provide the CPU and memory available on the host machine. Choose the most suitable options from the list to receive specific recommendations. If you are unsure, seek expert guidance.</p>
+</fieldset>
+<div id="paramtune" style="padding:2em;position:relative;width: fit-content;">
+<h3 style="font: italic 1.2em Georgia, serif;text-decoration: underline; margin: 0 0 0.5em;">Recommendations:</h3>
+<ol>
+</ol>
+<p>* Collecting pg_gather data during right utilization levels is important to tune the system for the specific workload</p>
+</div>
+<button type="button" onclick="getreccomendation()" title="Calculate / Recalculate Parameters">&#128257; Calculate</button>
+<button type="button" onclick="copyashtml()" title="Copy as html tags">Copy as HTML tags</button>
+<button type="button" onclick="copyrichhtml()" title="Copy as Rich HTML">Copy as Rich HTML</button>
+</details>
+</div>
+<h2 id="topics">Sections</h2>
+<ol>
+<li><a href="#tabInfo">Tables</a></li>
+<li><a href="#tabPart">Partitioned Tables</a></li>
+<li><a href="#IndInfo">Indexes</a></li>
+<li><a href="#params">Parameters / Settings</a></li>
+<li><a href="#tblextn">Extensions</a></li>
+<li><a href="#tblhba">Security-HBA rules</a>
+<li><a href="#tblcs">Connection & Users</a></li>
+<li><a href="#tblDBTime">Database Time</a></li>
+<li><a href="#tblsess">Session Details</a></li>
+<li><a href="#tblstmnt">Top Statements</a></li>
+<li><a href="#tblreplstat">Replications</a></li>
+<li><a href="#tblchkpnt" >BGWriter & Checkpointer</a></li>
+<li><a href="#finditem">Findings</a></li>
+</ol>
+<div id="bottommenu">
+<a href="#topics" title="Sections">☰ Section Index (Alt+I)</a>
+<div id="menu" style="display:none; position: relative">
+<ol>
+<li><a href="#tblgather">Head Info</a></li>
+<li><a href="#paramrecs">Parameter Recommendations</a></li>
+<li><a href="#tabInfo">Tables</a></li>
+<li><a href="#tabPart">Partitioned Tables</a></li>
+<li><a href="#IndInfo">Indexes</a></li>
+<li><a href="#params">Parameters / Settings</a></li>
+<li><a href="#tblextn">Extensions</a></li>
+<li><a href="#tblhba">Security-HBA rules</a>
+<li><a href="#tblcs">Connection & Users</a></li>
+<li><a href="#tblDBTime">Database Time</a></li>
+<li><a href="#tblsess">Session Details</a></li>
+<li><a href="#tblstmnt">Top Statements</a></li>
+<li><a href="#tblreplstat">Replications</a></li>
+<li><a href="#tblchkpnt" >BGWriter & Checkpointer</a></li>
+<li><a href="#tbliostat">IO Statistics</a></li>
+<li><a href="#finditem">Findings</a></li>
+</ol>
+</div>
+</div>
+<div id="sections" style="display:none">
+<table border="1" id="tabInfo" class="thidden">
+  <caption></caption>
+  <tr>
+    <th align="center">Name</th>
+    <th align="center">concat</th>
+    <th align="center">NS</th>
+    <th align="center">Bloat%</th>
+    <th align="center">Live</th>
+    <th align="center">Dead</th>
+    <th align="center">D/L</th>
+    <th align="center">Rel size</th>
+    <th align="center">Tot.Tab size</th>
+    <th align="center">Tab+Ind size</th>
+    <th align="center">Rel. Age</th>
+    <th align="center">Last vacuum</th>
+    <th align="center">Last analyze</th>
+    <th align="center">Vaccs</th>
+    <th align="center">Toast name</th>
+    <th align="center">Toast + Ind</th>
+    <th align="center">Toast Age</th>
+    <th align="center">Max age</th>
+    <th align="center">Fetch</th>
+    <th align="center">C.Hit%</th>
+    <th align="center">Last Use</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">wide_audit_log</td>
+    <td align="left">16556,0,0,0,0,1,1,1,1,,,16556,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">100000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">40960000</td>
+    <td align="right">41000960</td>
+    <td align="right">43261952</td>
+    <td align="right">1152</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16556</td>
+    <td align="right">8192</td>
+    <td align="right">1152</td>
+    <td align="right">1152</td>
+    <td align="right">5000</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bloat_demo</td>
+    <td align="left">16520,200000,0,160000,0,1,0,1,1,,,16520,0,{autovacuum_enabled=false}</td>
+    <td align="right">16428</td>
+    <td align="right">21</td>
+    <td align="right">45000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">36478976</td>
+    <td align="right">36528128</td>
+    <td align="right">42180608</td>
+    <td align="right">1150</td>
+    <td align="left">2026-03-17 13:15:06</td>
+    <td align="left">2026-03-17 13:15:06</td>
+    <td align="right">2</td>
+    <td align="left">pg_toast_16520</td>
+    <td align="right">8192</td>
+    <td align="right">227</td>
+    <td align="right">1150</td>
+    <td align="right">549234</td>
+    <td align="right">99</td>
+    <td align="left">2026-03-17 13:14:38</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">order_items</td>
+    <td align="left">16479,0,0,0,0,3,1,1,1,,,16479,0,</td>
+    <td align="right">16428</td>
+    <td align="right">0</td>
+    <td align="right">300000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">18071552</td>
+    <td align="right">18096128</td>
+    <td align="right">31907840</td>
+    <td align="right">1171</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">1171</td>
+    <td align="right">13248</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">events</td>
+    <td align="left">16531,0,0,0,0,1,1,1,1,,,16531,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">200000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">16891904</td>
+    <td align="right">16924672</td>
+    <td align="right">21438464</td>
+    <td align="right">1159</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16531</td>
+    <td align="right">8192</td>
+    <td align="right">1159</td>
+    <td align="right">1159</td>
+    <td align="right">26806</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:22:15</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">orders</td>
+    <td align="left">16459,0,4,0,1,4,1,1,1,,,16459,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">100000</td>
+    <td align="right">4</td>
+    <td align="right">0.0</td>
+    <td align="right">7380992</td>
+    <td align="right">7413760</td>
+    <td align="right">15400960</td>
+    <td align="right">1176</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16459</td>
+    <td align="right">8192</td>
+    <td align="right">1176</td>
+    <td align="right">1176</td>
+    <td align="right">6355</td>
+    <td align="right">99</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">users</td>
+    <td align="left">16430,0,0,0,0,2,1,1,2,,,16430,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">50000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">4612096</td>
+    <td align="right">4644864</td>
+    <td align="right">9355264</td>
+    <td align="right">1182</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16430</td>
+    <td align="right">8192</td>
+    <td align="right">1182</td>
+    <td align="right">1182</td>
+    <td align="right">3951</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">search_log</td>
+    <td align="left">16542,0,0,0,0,4,4,1,1,,,16542,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">50000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">3416064</td>
+    <td align="right">3448832</td>
+    <td align="right">8273920</td>
+    <td align="right">1157</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16542</td>
+    <td align="right">8192</td>
+    <td align="right">1157</td>
+    <td align="right">1157</td>
+    <td align="right">417</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">products</td>
+    <td align="left">16444,0,0,0,0,4,3,1,2,,,16444,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">10000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">901120</td>
+    <td align="right">933888</td>
+    <td align="right">1687552</td>
+    <td align="right">1180</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16444</td>
+    <td align="right">8192</td>
+    <td align="right">1180</td>
+    <td align="right">1180</td>
+    <td align="right">222</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">inventory</td>
+    <td align="left">16500,0,0,0,0,2,2,1,2,,,16500,0,</td>
+    <td align="right">16428</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">10000</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+    <td align="right">630784</td>
+    <td align="right">663552</td>
+    <td align="right">1155072</td>
+    <td align="right">1167</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">2026-03-17 12:39:48</td>
+    <td align="right">0</td>
+    <td align="left">pg_toast_16500</td>
+    <td align="right">8192</td>
+    <td align="right">1167</td>
+    <td align="right">1167</td>
+    <td align="right">77</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+</table>
+<p>(9 rows)<br />
+</p>
+<table border="1" id="tabPart" class="thidden">
+  <caption></caption>
+  <tr>
+    <th align="center">Partitioned Table</th>
+    <th align="center">Default Partition Name, Count</th>
+    <th align="center">Partitioning Type</th>
+    <th align="center">Partitions</th>
+    <th align="center">tot_tab_size</th>
+    <th align="center">tab_ind_size</th>
+    <th align="center">Fetch Prune %</th>
+  </tr>
+</table>
+<p>(0 rows)<br />
+</p>
+<table border="1" id="IndInfo">
+  <caption></caption>
+  <tr>
+    <th align="center">Schema</th>
+    <th align="center">Table</th>
+    <th align="center">Index</th>
+    <th align="center">UK?</th>
+    <th align="center">PK?</th>
+    <th align="center">Scans</th>
+    <th align="center">size</th>
+    <th align="center">Fetch</th>
+    <th align="center">C.Hit%</th>
+    <th align="center">Last Use</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">order_items</td>
+    <td align="left">order_items_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">0</td>
+    <td align="right">6758400</td>
+    <td align="right">5</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">bloat_demo</td>
+    <td align="left">bloat_demo_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">6</td>
+    <td align="right">5652480</td>
+    <td align="right">306807</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:14:38</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">events</td>
+    <td align="left">events_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">0</td>
+    <td align="right">4513792</td>
+    <td align="right">12</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">order_items</td>
+    <td align="left">idx_order_items_order_id</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">10</td>
+    <td align="right">4431872</td>
+    <td align="right">35</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">users</td>
+    <td align="left">users_email_key</td>
+    <td align="left">t</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">3571712</td>
+    <td align="right">5</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">orders</td>
+    <td align="left">idx_orders_created_at</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">2678784</td>
+    <td align="right">17</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">order_items</td>
+    <td align="left">idx_order_items_product_id</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">2</td>
+    <td align="right">2621440</td>
+    <td align="right">9</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">orders</td>
+    <td align="left">idx_orders_user_id</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">10</td>
+    <td align="right">2375680</td>
+    <td align="right">37</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">wide_audit_log</td>
+    <td align="left">wide_audit_log_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">0</td>
+    <td align="right">2260992</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">orders</td>
+    <td align="left">orders_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">16</td>
+    <td align="right">2260992</td>
+    <td align="right">51</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:08:12</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">search_log</td>
+    <td align="left">idx_search_log_user_id_3</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">1228800</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">search_log</td>
+    <td align="left">idx_search_log_user_id_2</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">1228800</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">search_log</td>
+    <td align="left">idx_search_log_user_id_1</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">1228800</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">search_log</td>
+    <td align="left">search_log_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">0</td>
+    <td align="right">1138688</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">users</td>
+    <td align="left">users_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">10</td>
+    <td align="right">1138688</td>
+    <td align="right">25</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">orders</td>
+    <td align="left">idx_orders_status</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">3</td>
+    <td align="right">671744</td>
+    <td align="right">110</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:17</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">products</td>
+    <td align="left">products_sku_key</td>
+    <td align="left">t</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">335872</td>
+    <td align="right">1</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">products</td>
+    <td align="left">products_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">2</td>
+    <td align="right">245760</td>
+    <td align="right">5</td>
+    <td align="right">100</td>
+    <td align="left">2026-03-17 13:05:18</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">inventory</td>
+    <td align="left">inventory_product_id_key</td>
+    <td align="left">t</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">245760</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">inventory</td>
+    <td align="left">inventory_pkey</td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">0</td>
+    <td align="right">245760</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">products</td>
+    <td align="left">idx_products_is_active</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">90112</td>
+    <td align="right">1</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ecommerce</td>
+    <td align="left">products</td>
+    <td align="left">idx_products_category</td>
+    <td align="left">f</td>
+    <td align="left">f</td>
+    <td align="right">0</td>
+    <td align="right">81920</td>
+    <td align="right">1</td>
+    <td align="right">100</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+</table>
+<p>(22 rows)<br />
+</p>
+<table border="1" id="params">
+  <caption></caption>
+  <tr>
+    <th align="center">Name</th>
+    <th align="center">Setting</th>
+    <th align="center">Unit</th>
+    <th align="center">Current Source</th>
+    <th align="center">Other Locations &amp; Values</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">allow_in_place_tablespaces</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">allow_system_table_mods</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">application_name</td>
+    <td align="left">psql</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">client</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">archive_cleanup_command</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">archive_command</td>
+    <td align="left">(disabled)</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">archive_library</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">archive_mode</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">archive_timeout</td>
+    <td align="left">0</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">array_nulls</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">authentication_timeout</td>
+    <td align="left">60</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_analyze_scale_factor</td>
+    <td align="left">0.1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_analyze_threshold</td>
+    <td align="left">50</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_freeze_max_age</td>
+    <td align="left">200000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_max_workers</td>
+    <td align="left">3</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_multixact_freeze_max_age</td>
+    <td align="left">400000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_naptime</td>
+    <td align="left">60</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_cost_delay</td>
+    <td align="left">2</td>
+    <td align="left">ms</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_cost_limit</td>
+    <td align="left">-1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_insert_scale_factor</td>
+    <td align="left">0.2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_insert_threshold</td>
+    <td align="left">1000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_scale_factor</td>
+    <td align="left">0.02</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_vacuum_threshold</td>
+    <td align="left">50</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">autovacuum_work_mem</td>
+    <td align="left">-1</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">backend_flush_after</td>
+    <td align="left">0</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">backslash_quote</td>
+    <td align="left">safe_encoding</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">backtrace_functions</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bgwriter_delay</td>
+    <td align="left">200</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bgwriter_flush_after</td>
+    <td align="left">64</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bgwriter_lru_maxpages</td>
+    <td align="left">100</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bgwriter_lru_multiplier</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">block_size</td>
+    <td align="left">8192</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bonjour</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bonjour_name</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">bytea_output</td>
+    <td align="left">hex</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">check_function_bodies</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">checkpoint_completion_target</td>
+    <td align="left">0.9</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">checkpoint_flush_after</td>
+    <td align="left">32</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">checkpoint_timeout</td>
+    <td align="left">300</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">checkpoint_warning</td>
+    <td align="left">30</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">client_connection_check_interval</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">client_encoding</td>
+    <td align="left">UTF8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">client_min_messages</td>
+    <td align="left">notice</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">cluster_name</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">commit_delay</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">commit_siblings</td>
+    <td align="left">5</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">compute_query_id</td>
+    <td align="left">auto</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">config_file</td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">constraint_exclusion</td>
+    <td align="left">partition</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">cpu_index_tuple_cost</td>
+    <td align="left">0.005</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">cpu_operator_cost</td>
+    <td align="left">0.0025</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">cpu_tuple_cost</td>
+    <td align="left">0.01</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">createrole_self_grant</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">cursor_tuple_fraction</td>
+    <td align="left">0.1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">data_checksums</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">data_directory</td>
+    <td align="left">/var/lib/postgresql/data</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">data_directory_mode</td>
+    <td align="left">0700</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">data_sync_retry</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">DateStyle</td>
+    <td align="left">ISO, MDY</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">db_user_namespace</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">deadlock_timeout</td>
+    <td align="left">1000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_assertions</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_discard_caches</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_io_direct</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_logical_replication_streaming</td>
+    <td align="left">buffered</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_parallel_query</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_pretty_print</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_print_parse</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_print_plan</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">debug_print_rewritten</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_statistics_target</td>
+    <td align="left">100</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_table_access_method</td>
+    <td align="left">heap</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_tablespace</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_text_search_config</td>
+    <td align="left">pg_catalog.english</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_toast_compression</td>
+    <td align="left">pglz</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_transaction_deferrable</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_transaction_isolation</td>
+    <td align="left">read committed</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">default_transaction_read_only</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">dynamic_library_path</td>
+    <td align="left">$libdir</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">dynamic_shared_memory_type</td>
+    <td align="left">posix</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">effective_cache_size</td>
+    <td align="left">65536</td>
+    <td align="left">8kB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">effective_io_concurrency</td>
+    <td align="left">1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_async_append</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_bitmapscan</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_gathermerge</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_hashagg</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_hashjoin</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_incremental_sort</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_indexonlyscan</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_indexscan</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_material</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_memoize</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_mergejoin</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_nestloop</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_parallel_append</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_parallel_hash</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_partition_pruning</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_partitionwise_aggregate</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_partitionwise_join</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_presorted_aggregate</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_seqscan</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_sort</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">enable_tidscan</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">escape_string_warning</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">event_source</td>
+    <td align="left">PostgreSQL</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">exit_on_error</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">extension_destdir</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">external_pid_file</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">extra_float_digits</td>
+    <td align="left">1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">file_extend_method</td>
+    <td align="left">posix_fallocate</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">from_collapse_limit</td>
+    <td align="left">8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">fsync</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">full_page_writes</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_effort</td>
+    <td align="left">5</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_generations</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_pool_size</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_seed</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_selection_bias</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">geqo_threshold</td>
+    <td align="left">12</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">gin_fuzzy_search_limit</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">gin_pending_list_limit</td>
+    <td align="left">4096</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">gss_accept_delegation</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">hash_mem_multiplier</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">hba_file</td>
+    <td align="left">/etc/postgresql/pg_hba.conf</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">hot_standby</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">hot_standby_feedback</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">huge_pages</td>
+    <td align="left">try</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">huge_page_size</td>
+    <td align="left">0</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">icu_validation_level</td>
+    <td align="left">warning</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ident_file</td>
+    <td align="left">/var/lib/postgresql/data/pg_ident.conf</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">idle_in_transaction_session_timeout</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">idle_session_timeout</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ignore_checksum_failure</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ignore_invalid_pages</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ignore_system_indexes</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">in_hot_standby</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">integer_datetimes</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">IntervalStyle</td>
+    <td align="left">postgres</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_above_cost</td>
+    <td align="left">100000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_debugging_support</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_dump_bitcode</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_expressions</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_inline_above_cost</td>
+    <td align="left">500000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_optimize_above_cost</td>
+    <td align="left">500000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_profiling_support</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_provider</td>
+    <td align="left">llvmjit</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">jit_tuple_deforming</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">join_collapse_limit</td>
+    <td align="left">8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">krb_caseins_users</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">krb_server_keyfile</td>
+    <td align="left">FILE:/etc/postgresql-common/krb5.keytab</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lc_messages</td>
+    <td align="left">en_US.utf8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lc_monetary</td>
+    <td align="left">en_US.utf8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lc_numeric</td>
+    <td align="left">en_US.utf8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lc_time</td>
+    <td align="left">en_US.utf8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">listen_addresses</td>
+    <td align="left">*</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">local_preload_libraries</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lock_timeout</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">lo_compat_privileges</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_autovacuum_min_duration</td>
+    <td align="left">600000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_checkpoints</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_connections</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_destination</td>
+    <td align="left">stderr</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_directory</td>
+    <td align="left">log</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_disconnections</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_duration</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_error_verbosity</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_executor_stats</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_file_mode</td>
+    <td align="left">0600</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_filename</td>
+    <td align="left">postgresql-%Y-%m-%d_%H%M%S.log</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">logging_collector</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_hostname</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">logical_decoding_work_mem</td>
+    <td align="left">65536</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_line_prefix</td>
+    <td align="left">%m [%p] </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_lock_waits</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_min_duration_sample</td>
+    <td align="left">-1</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_min_duration_statement</td>
+    <td align="left">1000</td>
+    <td align="left">ms</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_min_error_statement</td>
+    <td align="left">error</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_min_messages</td>
+    <td align="left">warning</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_parameter_max_length</td>
+    <td align="left">-1</td>
+    <td align="left">B</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_parameter_max_length_on_error</td>
+    <td align="left">0</td>
+    <td align="left">B</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_parser_stats</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_planner_stats</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_recovery_conflict_waits</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_replication_commands</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_rotation_age</td>
+    <td align="left">1440</td>
+    <td align="left">min</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_rotation_size</td>
+    <td align="left">10240</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_startup_progress_interval</td>
+    <td align="left">10000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_statement</td>
+    <td align="left">none</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_statement_sample_rate</td>
+    <td align="left">1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_statement_stats</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_temp_files</td>
+    <td align="left">-1</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_timezone</td>
+    <td align="left">Etc/UTC</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_transaction_sample_rate</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">log_truncate_on_rotation</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">maintenance_io_concurrency</td>
+    <td align="left">10</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">maintenance_work_mem</td>
+    <td align="left">65536</td>
+    <td align="left">kB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_connections</td>
+    <td align="left">100</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf - 100</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_files_per_process</td>
+    <td align="left">1000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_function_args</td>
+    <td align="left">100</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_identifier_length</td>
+    <td align="left">63</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_index_keys</td>
+    <td align="left">32</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_locks_per_transaction</td>
+    <td align="left">64</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_logical_replication_workers</td>
+    <td align="left">4</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_parallel_apply_workers_per_subscription</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_parallel_maintenance_workers</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_parallel_workers</td>
+    <td align="left">8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_parallel_workers_per_gather</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_pred_locks_per_page</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_pred_locks_per_relation</td>
+    <td align="left">-2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_pred_locks_per_transaction</td>
+    <td align="left">64</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_prepared_transactions</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_replication_slots</td>
+    <td align="left">10</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_slot_wal_keep_size</td>
+    <td align="left">-1</td>
+    <td align="left">MB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_stack_depth</td>
+    <td align="left">2048</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_standby_archive_delay</td>
+    <td align="left">30000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_standby_streaming_delay</td>
+    <td align="left">30000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_sync_workers_per_subscription</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_wal_senders</td>
+    <td align="left">10</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_wal_size</td>
+    <td align="left">1024</td>
+    <td align="left">MB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf - 1GB</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">max_worker_processes</td>
+    <td align="left">8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">min_dynamic_shared_memory</td>
+    <td align="left">0</td>
+    <td align="left">MB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">min_parallel_index_scan_size</td>
+    <td align="left">64</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">min_parallel_table_scan_size</td>
+    <td align="left">1024</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">min_wal_size</td>
+    <td align="left">80</td>
+    <td align="left">MB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf - 80MB</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">old_snapshot_threshold</td>
+    <td align="left">-1</td>
+    <td align="left">min</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">parallel_leader_participation</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">parallel_setup_cost</td>
+    <td align="left">1000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">parallel_tuple_cost</td>
+    <td align="left">0.1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">password_encryption</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pg_stat_statements.max</td>
+    <td align="left">5000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pg_stat_statements.save</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pg_stat_statements.track</td>
+    <td align="left">all</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pg_stat_statements.track_planning</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pg_stat_statements.track_utility</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">plan_cache_mode</td>
+    <td align="left">auto</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">port</td>
+    <td align="left">5432</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">post_auth_delay</td>
+    <td align="left">0</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">pre_auth_delay</td>
+    <td align="left">0</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">primary_conninfo</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">primary_slot_name</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">quote_all_identifiers</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">random_page_cost</td>
+    <td align="left">4</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_end_command</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_init_sync_method</td>
+    <td align="left">fsync</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_min_apply_delay</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_prefetch</td>
+    <td align="left">try</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_action</td>
+    <td align="left">pause</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_inclusive</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_lsn</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_name</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_time</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_timeline</td>
+    <td align="left">latest</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recovery_target_xid</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">recursive_worktable_factor</td>
+    <td align="left">10</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">remove_temp_files_after_crash</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">reserved_connections</td>
+    <td align="left">0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">restart_after_crash</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">restore_command</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">restrict_nonsystem_relation_kind</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">row_security</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">scram_iterations</td>
+    <td align="left">4096</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">search_path</td>
+    <td align="left">&quot;$user&quot;, public</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">segment_size</td>
+    <td align="left">131072</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">send_abort_for_crash</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">send_abort_for_kill</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">seq_page_cost</td>
+    <td align="left">1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">server_encoding</td>
+    <td align="left">UTF8</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">server_version</td>
+    <td align="left">16.13 (Debian 16.13-1.pgdg12+1)</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">server_version_num</td>
+    <td align="left">160013</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">session_preload_libraries</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">session_replication_role</td>
+    <td align="left">origin</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">shared_buffers</td>
+    <td align="left">32768</td>
+    <td align="left">8kB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf - 128MB</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">shared_memory_size</td>
+    <td align="left">281</td>
+    <td align="left">MB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">shared_memory_size_in_huge_pages</td>
+    <td align="left">141</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">shared_memory_type</td>
+    <td align="left">mmap</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">shared_preload_libraries</td>
+    <td align="left">pg_stat_statements</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_ca_file</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_cert_file</td>
+    <td align="left">server.crt</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_ciphers</td>
+    <td align="left">HIGH:MEDIUM:+3DES:!aNULL</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_crl_dir</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_crl_file</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_dh_params_file</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_ecdh_curve</td>
+    <td align="left">prime256v1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_key_file</td>
+    <td align="left">server.key</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_library</td>
+    <td align="left">OpenSSL</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_max_protocol_version</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_min_protocol_version</td>
+    <td align="left">TLSv1.2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_passphrase_command</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_passphrase_command_supports_reload</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">ssl_prefer_server_ciphers</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">standard_conforming_strings</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">statement_timeout</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">stats_fetch_consistency</td>
+    <td align="left">cache</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">superuser_reserved_connections</td>
+    <td align="left">3</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">synchronize_seqscans</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">synchronous_commit</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">synchronous_standby_names</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">syslog_facility</td>
+    <td align="left">local0</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">syslog_ident</td>
+    <td align="left">postgres</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">syslog_sequence_numbers</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">syslog_split_messages</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">tcp_keepalives_count</td>
+    <td align="left">9</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">tcp_keepalives_idle</td>
+    <td align="left">7200</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">tcp_keepalives_interval</td>
+    <td align="left">75</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">tcp_user_timeout</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">temp_buffers</td>
+    <td align="left">1024</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">temp_file_limit</td>
+    <td align="left">-1</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">temp_tablespaces</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">TimeZone</td>
+    <td align="left">Etc/UTC</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/var/lib/postgresql/data/postgresql.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">timezone_abbreviations</td>
+    <td align="left">Default</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">trace_notify</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">trace_recovery_messages</td>
+    <td align="left">log</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">trace_sort</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_activities</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_activity_query_size</td>
+    <td align="left">1024</td>
+    <td align="left">B</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_commit_timestamp</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_counts</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_functions</td>
+    <td align="left">none</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_io_timing</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">track_wal_io_timing</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">transaction_deferrable</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">transaction_isolation</td>
+    <td align="left">read committed</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">transaction_read_only</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">override</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">transform_null_equals</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">unix_socket_directories</td>
+    <td align="left">/var/run/postgresql</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">unix_socket_group</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">unix_socket_permissions</td>
+    <td align="left">0777</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">update_process_title</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_buffer_usage_limit</td>
+    <td align="left">256</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_cost_delay</td>
+    <td align="left">0</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_cost_limit</td>
+    <td align="left">200</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_cost_page_dirty</td>
+    <td align="left">20</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_cost_page_hit</td>
+    <td align="left">1</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_cost_page_miss</td>
+    <td align="left">2</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_failsafe_age</td>
+    <td align="left">1600000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_freeze_min_age</td>
+    <td align="left">50000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_freeze_table_age</td>
+    <td align="left">150000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_multixact_failsafe_age</td>
+    <td align="left">1600000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_multixact_freeze_min_age</td>
+    <td align="left">5000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">vacuum_multixact_freeze_table_age</td>
+    <td align="left">150000000</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_block_size</td>
+    <td align="left">8192</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_buffers</td>
+    <td align="left">1024</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_compression</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_consistency_checking</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_decode_buffer_size</td>
+    <td align="left">524288</td>
+    <td align="left">B</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_init_zero</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_keep_size</td>
+    <td align="left">0</td>
+    <td align="left">MB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_level</td>
+    <td align="left">replica</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_log_hints</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_receiver_create_temp_slot</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_receiver_status_interval</td>
+    <td align="left">10</td>
+    <td align="left">s</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_receiver_timeout</td>
+    <td align="left">60000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_recycle</td>
+    <td align="left">on</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_retrieve_retry_interval</td>
+    <td align="left">5000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_segment_size</td>
+    <td align="left">16777216</td>
+    <td align="left">B</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_sender_timeout</td>
+    <td align="left">60000</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_skip_threshold</td>
+    <td align="left">2048</td>
+    <td align="left">kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_sync_method</td>
+    <td align="left">fdatasync</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_writer_delay</td>
+    <td align="left">200</td>
+    <td align="left">ms</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">wal_writer_flush_after</td>
+    <td align="left">128</td>
+    <td align="left">8kB</td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">work_mem</td>
+    <td align="left">8192</td>
+    <td align="left">kB</td>
+    <td align="left">/etc/postgresql/conf.d/custom.conf</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">xmlbinary</td>
+    <td align="left">base64</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">xmloption</td>
+    <td align="left">content</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">zero_damaged_pages</td>
+    <td align="left">off</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">default</td>
+    <td align="left">&nbsp; </td>
+  </tr>
+</table>
+<p>(368 rows)<br />
+</p>
+<table border="1" id="tblextn">
+  <caption></caption>
+  <tr>
+    <th align="center">oid</th>
+    <th align="center">Extension</th>
+    <th align="center">Owner</th>
+    <th align="center">Schema</th>
+    <th align="center">Relocatable?</th>
+    <th align="center">Version</th>
+  </tr>
+  <tr valign="top">
+    <td align="right">13564</td>
+    <td align="left">plpgsql</td>
+    <td align="left">pgadmin</td>
+    <td align="left">pg_catalog</td>
+    <td align="left">f</td>
+    <td align="left">1.0</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">16424</td>
+    <td align="left">pg_prewarm</td>
+    <td align="left">pgadmin</td>
+    <td align="left">public</td>
+    <td align="left">t</td>
+    <td align="left">1.2</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">16416</td>
+    <td align="left">pg_buffercache</td>
+    <td align="left">pgadmin</td>
+    <td align="left">public</td>
+    <td align="left">t</td>
+    <td align="left">1.4</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">16385</td>
+    <td align="left">pg_stat_statements</td>
+    <td align="left">pgadmin</td>
+    <td align="left">public</td>
+    <td align="left">t</td>
+    <td align="left">1.10</td>
+  </tr>
+</table>
+
+<table border="1" id="tblhba">
+  <caption></caption>
+  <tr>
+    <th align="center">Line</th>
+    <th align="center">Type</th>
+    <th align="center">Database</th>
+    <th align="center">User</th>
+    <th align="center">Address</th>
+    <th align="center">CIDR Mask</th>
+    <th align="center">DDN/Binary Mask</th>
+    <th align="center">IP Ver.</th>
+    <th align="center">Auth Method</th>
+    <th align="center">Error</th>
+    <th align="center">Network Block</th>
+    <th align="center">Shadowed By</th>
+    <th align="center">No. of IPs</th>
+  </tr>
+  <tr valign="top">
+    <td align="right">9</td>
+    <td align="left">local</td>
+    <td align="left">{all}</td>
+    <td align="left">{all}</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">trust</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="right">13</td>
+    <td align="left">host</td>
+    <td align="left">{all}</td>
+    <td align="left">{all}</td>
+    <td align="left">127.0.0.1</td>
+    <td align="right">32</td>
+    <td align="left">255.255.255.255</td>
+    <td align="left">IPv4</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">127.0.0.1</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">1</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">14</td>
+    <td align="left">host</td>
+    <td align="left">{all}</td>
+    <td align="left">{all}</td>
+    <td align="left">::1</td>
+    <td align="right">128</td>
+    <td align="left">ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</td>
+    <td align="left">IPv6</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">::1</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">1</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">19</td>
+    <td align="left">host</td>
+    <td align="left">{all}</td>
+    <td align="left">{all}</td>
+    <td align="left">172.16.0.0</td>
+    <td align="right">12</td>
+    <td align="left">255.240.0.0</td>
+    <td align="left">IPv4</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">172.16.0.0/12</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">1048576</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">23</td>
+    <td align="left">host</td>
+    <td align="left">{all}</td>
+    <td align="left">{all}</td>
+    <td align="left">192.168.0.0</td>
+    <td align="right">16</td>
+    <td align="left">255.255.0.0</td>
+    <td align="left">IPv4</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">192.168.0.0/16</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">65536</td>
+  </tr>
+  <tr valign="top">
+    <td align="right">26</td>
+    <td align="left">host</td>
+    <td align="left">{replication}</td>
+    <td align="left">{all}</td>
+    <td align="left">172.16.0.0</td>
+    <td align="right">12</td>
+    <td align="left">255.240.0.0</td>
+    <td align="left">IPv4</td>
+    <td align="left">scram-sha-256</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">172.16.0.0/12</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">1048576</td>
+  </tr>
+</table>
+
+<table border="1" id="tblcs" class="lineblk thidden">
+  <caption></caption>
+  <tr>
+    <th align="center">Database</th>
+    <th align="center">json_agg</th>
+    <th align="center">Active</th>
+    <th align="center">IdleInTrans</th>
+    <th align="center">Idle</th>
+    <th align="center">Total</th>
+    <th align="center">SSL</th>
+    <th align="center">NonSSL</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">postgres</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">labdb</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">template1</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+  <tr valign="top">
+    <td align="left">template0</td>
+    <td align="left">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+</table>
+
+<table border="1" id="tblusr" class="thidden">
+  <caption></caption>
+  <tr>
+    <th align="center">User</th>
+    <th align="center">json_agg</th>
+    <th align="center">Super?</th>
+    <th align="center">Repl?</th>
+    <th align="center">Limit</th>
+    <th align="center">Enc</th>
+    <th align="center">Active</th>
+    <th align="center">IdleInTrans</th>
+    <th align="center">Idle</th>
+    <th align="center">Total</th>
+    <th align="center">SSL</th>
+    <th align="center">NonSSL</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">pgadmin</td>
+    <td align="left">&nbsp; </td>
+    <td align="left">t</td>
+    <td align="left">t</td>
+    <td align="right">&nbsp; </td>
+    <td align="left">SCRAM</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+  </tr>
+</table>
+
+<table border="1" id="tblDBTime" name="waits" style="clear: left" class="thidden">
+  <caption>WaitEvents</caption>
+  <tr>
+    <th align="center">Event</th>
+    <th align="center">?column?</th>
+    <th align="center">Event Count</th>
+  </tr>
+</table>
+
+<table border="1" id="tblsess" class="thidden">
+  <caption>Sessions</caption>
+  <tr>
+    <th align="center">pid</th>
+    <th align="center">to_jsonb</th>
+    <th align="center">state</th>
+    <th align="center">User</th>
+    <th align="center">client</th>
+    <th align="center">Last statement</th>
+    <th align="center">Connection Since</th>
+    <th align="center">Transaction Since</th>
+    <th align="center">xmin age</th>
+    <th align="center">Statement since</th>
+    <th align="center">State since</th>
+    <th align="center">waits</th>
+  </tr>
+</table>
+
+<table border="1" id="tblstmnt">
+  <caption>Top Statements</caption>
+  <tr>
+    <th align="center">Rank</th>
+    <th align="center">Statement</th>
+    <th align="center">DB.time%</th>
+    <th align="center">Execs</th>
+    <th align="center">Avg.ExecTime</th>
+    <th align="center">Avg.Reads</th>
+    <th align="center">C.Hit%</th>
+    <th align="center">Avg.Dirty</th>
+    <th align="center">Avg.Write</th>
+    <th align="center">Avg.Temp(r)</th>
+    <th align="center">Avg.Temp(w)</th>
+  </tr>
+  <tr valign="top">
+    <td align="right">1</td>
+    <td align="left">PREPARE pidevents AS<br />
+SELECT pid || $1 || COALESCE(wait_event,$2) FROM pg_stat_get_activity(NULLIF(pg_sleep($3)::text,$4)::INT) WHERE (state != $5 OR state IS NULL) AND pid != pg_backend_pid()</td>
+    <td align="right">100.00</td>
+    <td align="right">1000</td>
+    <td align="right">11.96</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+  </tr>
+</table>
+
+<table border="1" id="tblreplstat">
+  <caption>Top Statements</caption>
+  <tr>
+    <th align="center">Replication User</th>
+    <th align="center">Replica Address</th>
+    <th align="center">pid</th>
+    <th align="center">state</th>
+    <th align="center">Transmission Lag (Bytes)</th>
+    <th align="center">Replica Write lag(Bytes)</th>
+    <th align="center">Replica Flush lag(Bytes)</th>
+    <th align="center">Replay at Replica lag(Bytes)</th>
+    <th align="center">Slot</th>
+    <th align="center">plugin</th>
+    <th align="center">Type</th>
+    <th align="center">DB name</th>
+    <th align="center">temporary</th>
+    <th align="center">active</th>
+    <th align="center">xmin age</th>
+    <th align="center">catalog xmin age</th>
+    <th align="center">Restart LSN lag(Bytes)</th>
+    <th align="center">Confirmed LSN lag(Bytes)</th>
+  </tr>
+</table>
+
+<table border="1" id="tblchkpnt">
+  <caption>Top Statements</caption>
+  <tr>
+    <th align="center">Forced Checkpoint %</th>
+    <th align="center">avg mins between CP</th>
+    <th align="center">Avg CP write time (s)</th>
+    <th align="center">Avg CP sync time (s)</th>
+    <th align="center">Tot MB Written</th>
+    <th align="center">MB per CP</th>
+    <th align="center">Checkpoint MBps</th>
+    <th align="center">Bgwriter MBps</th>
+    <th align="center">Backend MBps</th>
+    <th align="center">Total MBps</th>
+    <th align="center">New buffers ratio</th>
+    <th align="center">Clean by checkpoints (%)</th>
+    <th align="center">Clean by bgwriter (%)</th>
+    <th align="center">Clean by backends (%)</th>
+    <th align="center">Bgwriter halts (%) per runs</th>
+    <th align="center">Bgwriter halt (%) due to LRU hit</th>
+    <th align="center">Reset days</th>
+  </tr>
+  <tr valign="top">
+    <td align="right">68.0</td>
+    <td align="right">2.94</td>
+    <td align="right">16.8973</td>
+    <td align="right">0.0103</td>
+    <td align="right">474.28</td>
+    <td align="right">29.6426</td>
+    <td align="right">0.1682</td>
+    <td align="right">0.0000</td>
+    <td align="right">0.0000</td>
+    <td align="right">0.1682</td>
+    <td align="right">0.781</td>
+    <td align="right">100.0</td>
+    <td align="right">0.0</td>
+    <td align="right">0.0</td>
+    <td align="right">0.00</td>
+    <td align="right">0</td>
+    <td align="right">0.0</td>
+  </tr>
+</table>
+
+<table border="1" id="tbliostat">
+  <caption>Top Statements</caption>
+  <tr>
+    <th align="center">Backend</th>
+    <th align="center">Read bytes/day</th>
+    <th align="center">Write bytes/day</th>
+    <th align="center">Writeback bytes/day</th>
+    <th align="center">Extend bytes/day</th>
+    <th align="center">Avg. Cache Hit bytes/day</th>
+    <th align="center">Evictions bytes/day</th>
+    <th align="center">Avg. Reuse</th>
+    <th align="center">Avg. FSyncs</th>
+  </tr>
+  <tr valign="top">
+    <td align="left">Checkpointer</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">15181221687</td>
+    <td align="right">15181221687</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">&nbsp; </td>
+    <td align="right">14256</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">background Parallel workers</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">2458683726</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">0</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Autovacuum</td>
+    <td align="right">1000278</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">0</td>
+    <td align="right">1822006675</td>
+    <td align="right">0</td>
+    <td align="right">&nbsp; </td>
+    <td align="right">0</td>
+  </tr>
+  <tr valign="top">
+    <td align="left">Client Backends</td>
+    <td align="right">296582475</td>
+    <td align="right">5001391</td>
+    <td align="right">0</td>
+    <td align="right">4311198885</td>
+    <td align="right">372920704076</td>
+    <td align="right">0</td>
+    <td align="right">5250</td>
+    <td align="right">0</td>
+  </tr>
+</table>
+
+<ol id="finditem" style="padding:2em;position:relative">
+<h3 style="font: italic bold 2em Georgia, serif;text-decoration: underline; margin: 0 0 0.5em;">Findings:</h3>
+</ol>
+</div> <!--End of "sections"-->
+<footer>End of <a href="https://github.com/jobinau/pg_gather">pgGather</a> Report</footer>
+<script>
+obj={"cn": {"f1": 0, "f2": 0}, "ns": [{"nsoid": "99", "nsname": "pg_toast"}, {"nsoid": "11", "nsname": "pg_catalog"}, {"nsoid": "2200", "nsname": "public"}, {"nsoid": "13212", "nsname": "information_schema"}, {"nsoid": "16428", "nsname": "ecommerce"}], "clas": {"f1": 0, "f2": 0, "f3": "16563"}, "clsr": false, "dbts": {"f1": "labdb", "f2": "2026-03-17T12:35:06.008845+00:00", "f3": "2026-03-17T13:22:16.37674+00:00", "f4": 1}, "meta": {"f1": 9510912, "f2": 184238080, "f3": 125}, "sess": {"f1": 0, "f2": 0, "f3": 0, "f4": 5, "f5": 0, "f6": 5, "f7": 5}, "tabs": {"f1": 9, "f2": 8, "f3": 0, "f4": 0}, "tbsp": null, "blkrs": null, "crash": null, "nokey": {"f1": 0, "f2": 0}, "sumry": {"f1": 25.805363, "f2": 7812.3295533567964148, "f3": 610483731.90369303563368542068}, "induse": {"f1": 0, "f2": 14, "f3": 8, "f4": 22, "f5": 8, "f6": 25993216}, "params": {"f1": "", "f2": "", "f3": 0, "f4": "8192", "f5": null, "f6": 368}, "arcfail": {"f1": null, "f2": null, "f3": null, "f4": null}, "mxiddbs": null, "netdlay": {"f1": null, "f2": null, "f3": 0}, "victims": null, "wmemuse": null, "errparams": null}
+ver="33";
+docurl="https://jobinau.github.io/pg_gather/";
+meta={"pgvers":["14.22","15.17","16.13","17.9","18.3"],"commonExtn":["plpgsql","pg_stat_statements","pg_repack"],"riskyExtn":["citus","tds_fdw","pglogical"]};
+let eventMaps;
+let colorMaps = new Map([["Activity","#00EE00"],["BufferPin","#8B0000"],["Client","#999999"],["CPU","#00CC00"],["Extension","#6B4226"],["IO","#0000CC"],["IPC","#FF9900"],["LWLock","#8B0000"],["Lock","#FF0000"],["Timeout","#FF00FF"]]);
+mgrver="";
+datadir="";
+autovacuum_freeze_max_age = 0;
+let strfind = "";
+totdb=0;
+totCPU=4;
+totMem=8;
+wrkld="";
+let trnsTimout=900;
+flsys= "";
+let blokers = []
+let blkvictims = []
+let params = []
+const canvas=document.createElement("canvas");
+const canvascontext=canvas.getContext("2d");
+async function fetchJsonWithTimeout(url, timeout) {
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), timeout);
+try {
+const response = await fetch(url + "?_=" + new Date().getDate(), { signal: controller.signal });
+clearTimeout(timeoutId);
+if (!response.ok) throw new Error("HTTP error! status:" + response.status );
+else return await response.json();
+} catch (error) {
+clearTimeout(timeoutId);
+if (error.name === "AbortError") throw new Error("Request timed out");
+else throw error;
+}
+}
+async function fetchWithTimeout(url, timeout) {
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), timeout);
+try {
+const response = await fetch(url + "?_=" + new Date().getDate(), { signal: controller.signal });
+clearTimeout(timeoutId);
+if (!response.ok) throw new Error("HTTP error! status:" + response.status );
+else return await response;
+} catch (error) {
+clearTimeout(timeoutId);
+if (error.name === "AbortError") throw new Error("Request timed out");
+else throw error;
+}
+}
+function afterRenderingComplete(callback) { requestAnimationFrame(() => { requestAnimationFrame(callback); }); }
+async function doAllChecks(){
+await fetchJsonWithTimeout(docurl + "meta.json",500).then(data => { meta = data; })
+.catch(error => { console.error("Error fetching JSON:", error); });
+try {eventMaps = new Map(await fetchJsonWithTimeout(docurl + "waitevents.json", 5000));}
+catch (error) { console.error("Error fetching wait events JSON:", error); eventMaps = new Map(); }
+console.log("Starting all checks");
+afterRenderingComplete(() => { console.log("This runs after the current rendering is complete.");
+document.getElementById("sections").style="display:table";
+document.getElementById("busy").style="display:none";
+});
+checkgather();
+checkpars();
+checkdbs();
+checkconns();
+checkusers();
+checkdbtime();
+checksess();
+checkiostat();
+checkreplstat();
+checktabs();
+checktabPart();
+checkindex();
+checkextn();
+checkhba();
+checkstmnts();
+checkchkpntbgwrtr();
+checkfindings();
+console.log("All checks completed");
+}
+document.addEventListener("DOMContentLoaded", () => {
+if (obj.victims !== null){
+obj.victims.forEach(function(victim){
+blkvictims.push(victim.f1);
+});
+obj.victims.forEach(function(victim){
+victim.f2.forEach(function(blker){
+if (blkvictims.indexOf(blker) == -1 && blokers.indexOf(blker) == -1) blokers.push(blker);
+});
+});
+}
+doAllChecks();
+});
+function setTitles(tr,tiltes){
+for(i=0;i<tiltes.length;i++) tr.cells[i].title=tiltes[i];
+}
+function checkgather(){
+const trs=document.getElementById("tblgather").rows
+let days,xmax=0;
+for (let i = 0; i < trs.length; i++) {
+val = trs[i].cells[1];
+switch(trs[i].cells[0].innerText){
+case "pg_gather" :
+val.innerText = val.innerText + "-v" + ver;
+break;
+case "Collected By" :
+if (val.innerText.slice(-2) < ver || val.innerText.slice(-2) < meta.ver ) { val.classList.add("warn"); val.title = "Data is collected using old/obsolete version of gather.sql file. Please use v" + ver;
+strfind += "<li><b>Old/obsolete version (v"+ val.innerText.slice(-2) + ") of pg_gather script (gather.sql) is used for data collection</b>. Please use the latest relase <b>(v" + meta.ver + ")</b> <a href='"+ docurl +"versionpolicy.html'>Details</a></li>";
+}
+break;
+case "In recovery?" :
+if(val.innerText == "true") {val.classList.add("lime"); val.title="Data collected at standby"; obj.primary = false;}
+else obj.primary = true;
+break;
+case "System" :
+let startIndex = val.innerText.indexOf("(") + 1;
+days = parseInt(val.innerText.substring(startIndex,val.innerText.indexOf(" days", startIndex)));
+break;
+case "PG Bin Dir." :
+{const pattern = new RegExp("(\\/usr\\/lib\\/postgresql\\/\\d+|\\/usr\\/pgsql-\\d+\\/)");
+if(!pattern.test(val.innerText) ) {
+val.classList.add("warn"); val.title = "Unusual PostgreSQL binary directory : " + val.innerText + ". Could be due to source build or portable binaries.";
+strfind += "<li><b>Unusual PostgreSQL binary directory : " + val.innerText + "</b>. Could be due to custom build or portable binaries. Understand the <a href='"+ docurl +"pgbinary.html'>risk involved</a></li>";
+}
+}
+break;
+case "Latest xid" :
+xmax = parseInt(val.innerText);
+break;
+case "Oldest xid ref" :
+let diff=xmax - parseInt(val.innerText);
+val.innerText += " (" + (diff).toString() + " xids old)";
+if (diff > 10000) {val.classList.add("warn"); val.title = "The oldest transaction is " + diff + " xids old, as per xid horizon";
+strfind += "<li>The oldest transaction is <b>" + diff + " xids old</b>. This can have serious concequnces. Refer <a href='"+ docurl +"xidhorizon.html'>Details</a></li>";
+}
+break;
+case "Time Line" :
+let Failover = parseInt(val.innerText.substring(0,val.innerText.indexOf(" (")))-1;
+if (days > 30 && Failover > 5){
+let MTBF = days/Failover;
+if (MTBF < 180){
+val.classList.add("warn"); val.title = "Poor MTBF / Availability number. There were " + Failover + " failovers in " + days + " days." ;
+strfind += "<li><b>Poor MTBF / Availability number: "+ Math.round(MTBF) +" days!</b>. There were " + Failover + " failovers in " + days + " days</li>";
+}
+}
+}
+}
+}
+function checkfindings(){
+let tmpstr = "";
+if (obj.sess.f7 < 4){
+strfind += "<li><b>The pg_gather data is collected by a user who don't have necessary privilege OR Content of the output file (out.txt) is copy-pasted destroying the TSV format</b><br/><b>1.</b>Please run the gather.sql as a privileged user (superuser, rds_superuser etc.) or some account with pg_monitor privilege and <b>2.</b> Please provide the output file as it is without copy-pasting</li>"
+document.getElementById("tblDBTime").title="Waitevents data will be growsly incorrect because the pg_gather data is collected by a user who don't have proper privilege OR content of output file is copy-pasted. Please refer the Findings section";
+document.getElementById("tblDBTime").caption.innerHTML += "<br/>" + document.getElementById("tblDBTime").title
+document.getElementById("tblDBTime").classList.add("high");
+}
+if (obj.sess.f2 > 0) strfind += "<li><b>Found " + obj.sess.f2 + " session(s) in idle-in-transaction state</b>. This can cause poor concurrency. Details in <a href=#tblsess>Sessions</a> section. Consider improving the application code and design</li>";
+if (obj.cn.f1 > 0){
+strfind +="<li><b>" + obj.cn.f2 + " / " + obj.cn.f1 + " connections </b> in use are new. "
+if (obj.cn.f2 > 9 || obj.cn.f2/obj.cn.f1 > 0.7 ){
+strfind+="Please consider this for improving connection pooling"
+}
+strfind += "</li>";
+}
+if (obj.induse.f1 > 0 ) strfind += "<li><b>"+ obj.induse.f1 +" Invalid Index(es)</b> found. Recreate or drop them. Refer <a href='"+ docurl +"InvalidIndexes.html'>Details</a></li>";
+if (obj.induse.f2 > 0 ) strfind += "<li><b>"+ obj.induse.f2 +" regular user indexes and " + obj.induse.f3 + " Toast Indexes are unused,</b> out of " + obj.induse.f4 + " user indexes and " + obj.induse.f5 + " Toast Indexes . Currently the unused indexes needs <b>additional "+ bytesToSize(obj.induse.f6) +" to cache</b>. <a href='"+ docurl +"unusedIndexes.html'>Details</a></li>";
+if (obj.mxiddbs !== null) strfind += "<li> Multi Transaction ID age : <b>" + obj.mxiddbs.f2 + "</b> for databases  <b>" + obj.mxiddbs.f1 + "</b> <a href='"+ docurl +"mxid.html'>Details</a></li>"
+if (obj.clas.f1 > 0) strfind += "<li><b>"+ obj.clas.f1 +" Natively partitioned tables</b> found. Tables section could contain partitions</li>";
+if (obj.clas.f2 > 0) strfind += "<li><b>"+ obj.clas.f2 +" Unlogged tables found.</b> These tables and associated indexes are ephemeral. <a href='"+ docurl +"unloggedtables.html'>Details</a></li>";
+if (obj.params.f3 > 10) strfind += "<li> Patroni/HA PG cluster :<b>" + obj.params.f2 + "</b></li>"
+if (obj.params.f5 != null && obj.params.f5.length > 0) strfind += "<li><b>Non-standard compile/Initialization time parameters detected : " + obj.params.f5.map(function(item) { return item.f1 + ": " + item.f2;}).join(", ") + "</b>. Custom Compilation is prone to bugs, and problems which are difficult to find</li>";
+if (obj.params.f6 == null || obj.params.f6 ==0 ) strfind += "<li><b>No Parameter values found. The data collection could be partial or corrupt Parameter file(s).</b></li>";
+if (obj.errparams !== null && obj.errparams.length > 0) {
+strfind += "<li> <b>Parameter file errors detected :<ul>";
+obj.errparams.forEach(function(t,idx){ strfind += "<li>" + t.f1 + " : " + t.f2 + " = "+ t.f3 +" in file " + t.f4 +"</li>" });
+strfind += "</ul></b></li>";
+}
+if (obj.crash !== null) strfind += "<li>Detected a <b>suspected crash / unclean shutdown around : " + obj.crash + ".</b> Please check the PostgreSQL logs</li>"
+if (obj.nokey.f1 > 0) strfind += "<li><b>"+ obj.nokey.f1 +" Tables without Primary Key</b> and <b>"+ obj.nokey.f2 +" Tables without niether Primary key nor Unique keys</b> found. Please refer <a href='"+ docurl +"pkuk.html'>Details</a></li>";
+if (obj.netdlay.f1 > 10) {
+if (obj.netdlay.f1 / obj.netdlay.f2 * 100 > 20 ){ strfind += "<li> There are <b>"+ obj.netdlay.f3 +" Sessions with considerable Net/Delays</b>"
+tmpstr = "Total <a href='"+ docurl +"NetDelay.html'>Net/Delay<a>"
+if (obj.netdlay.f1 / obj.netdlay.f2 > 1){
+tmpstr += " is <b>" + (obj.netdlay.f1 / obj.netdlay.f2).toFixed(1) + "Times ! </b> of overall server activity. which is huge"
+}else if(obj.netdlay.f1 / obj.netdlay.f2 > 0.1){
+tmpstr += " is equivalent to <b>" + (obj.netdlay.f1 * 100 / obj.netdlay.f2).toFixed(2) + "% </b> of server activity"
+}
+if (tmpstr.length > 100 ){
+strfind += "<li>" + tmpstr + "</li>"
+document.getElementById("tblDBTime").tFoot.children[0].children[0].innerHTML += "<br/>" + tmpstr
+}
+}
+}
+for (let item of params) {
+if (typeof item.warn != "undefined"){
+strfind += "<li>" + item.warn +"</li>";
+}
+}
+if(obj.clsr){
+strfind += "<li>PostgreSQL is in Standby mode or in Recovery</li>";
+}else{
+if ( obj.tabs.f2 > 0 ) strfind += "<li> <b>No vacuum info for " + obj.tabs.f2 + "</b> tables/objects </li>";
+if (obj.arcfail != null) {
+if (obj.arcfail.f1 == null) strfind += "<li>No working WAL archiving and backup detected. PITR may not be possible</li>";
+if (obj.arcfail.f1 > 300) strfind += "<li>No WAL archiving happened in last "+ Math.round(obj.arcfail.f1/60) +" minutes. <b>Archiving could be failing</b>; please check PG logs</li>";
+if (obj.arcfail.f2 && obj.arcfail.f2 > 0) strfind += "<li>WAL archiving is <b>lagging by "+ bytesToSize(obj.arcfail.f2,1024) +"</b>. Last archived WAL is : <b>"+ obj.arcfail.f3 +"</b> at "+ obj.arcfail.f4 +".<a href='"+ docurl +"walarchive.html'> Details<a></li>";
+}
+if (obj.wmemuse !== null && obj.wmemuse.length > 0){ strfind += "<li> Biggest <code>maintenance_work_mem</code> consumers are :<b>"; obj.wmemuse.forEach(function(t,idx){ strfind += (idx+1)+". "+t.f1 + " (" + bytesToSize(t.f2) + ")    " }); strfind += "</b></li>"; }
+if (obj.victims !== null && obj.victims.length > 0) strfind += "<li><b>" + obj.victims.length + " session(s) blocked.</b></li>"
+if (obj.sumry !== null){ strfind += "<li>Data collection took <b>" + obj.sumry.f1 + " seconds. </b>";
+if ( obj.sumry.f1 < 23 ) strfind += "System response is good</li>";
+else if ( obj.sumry.f1 < 28 ) strfind += "System response is below average</li>";
+else strfind += "System response appears to be poor</li>";
+strfind += "<li>Current WAL generation rate is <b>" + bytesToSize(obj.sumry.f2) + " / hour</b>";
+if (obj.sumry.f3 !== null ) strfind += ", Long term average WAL generation rate is <b>" + bytesToSize(obj.sumry.f3) + "/hour</b></li>";
+else strfind += "</li>" }
+if ( obj.clas.f3 > 50000 ) strfind += "<li>Currently <b>OID of pg_class stands at " + Number(obj.clas.f3).toLocaleString("en-US") + "</b>. indicating the usage of temporary tables / High DDL activity </li>";
+if (obj.meta.f1 > 15728640){
+strfind += "<li>" + "The catalog metadata is :<b>" + bytesToSize(obj.meta.f1) + " For " + obj.meta.f3 + " objects. </b><a href='"+ docurl +"catalogbloat.html'> Details<a></li>"
+}
+if (obj.tbsp !== null && obj.tbsp.length > 0){
+const result=obj.tbsp.map(function(item) { return item.tsname + ": " + item.location;}).join(", ");
+strfind += "<li>Found additional <b>" + obj.tbsp.length + " tablespaces ("+ result +")</b> . <a href='"+ docurl +"tablespace.html'> Details<a></li>"
+}
+}
+if ( obj.tabs.f3 > 0 ) strfind += "<li> <b>No statistics available for " + obj.tabs.f3 + " tables/objects</b>, query planning can go wrong. <a href='"+ docurl +"missingstats.html'>Learn Details</a></li>";
+if ( obj.tabs.f1 > 10000) strfind += "<li> There are <b>" + obj.tabs.f1 + " tables/objects</b> in the database. Only the biggest 10000 will be displayed in the <a href=#tabInfo >Tables</a> section. Avoid too many tables/objects in single database. <a href='"+ docurl +"table_object.html'>Learn Details</a></li>";
+if (obj.ns !== null){
+let tempNScnt = obj.ns.filter(n => n.nsname.indexOf("pg_temp") > -1).length + obj.ns.filter(n => n.nsname.indexOf("pg_toast_temp") > -1).length ;
+strfind += "<li><b>" + (obj.ns.length - tempNScnt).toString() + " Regular schema(s) and " + tempNScnt + " temporary schema(s)</b> in this database. <a href='"+ docurl +"schema.html'> Details<a></li>";
+}
+const sharedBuffers = params.find(p => p.param === "shared_buffers");
+const hugePages = params.find(p => p.param === "huge_pages");
+if ( sharedBuffers?.val > 2097152 && hugePages?.val != "on" ){
+strfind += "<li><b>IMPORTANT : Enabling and enforcing huge_pages is essential for stability and reliability</b>. Especially when the system has shared_buffers of <b>"+ bytesToSize(sharedBuffers.val*8192) +"</b>.</b><a href='"+ docurl +"params/huge_pages.html'>Details<a></li>"
+}
+if (obj.tabs.bloatTabNum > 0) strfind += "<li>Found <b>"+ obj.tabs.bloatTabNum +" bloated tables</b> in this database. This could affect performance. <a href='"+ docurl +"bloat.html'>Details</a></li>";
+document.getElementById("finditem").innerHTML += strfind;
+}
+function checkconns(){
+tab=document.getElementById("tblcs");
+tab.caption.innerHTML="<span>DB Connections</span>";
+const trs=tab.rows
+let nonssl=0;
+for (var i=1;i<trs.length;i++){
+tr=trs[i];
+if (tr.cells[7].innerText > 0) nonssl += parseInt(tr.cells[7].innerText);
+if (tr.cells[5].innerText > 20 && tr.cells[7].innerText/tr.cells[5].innerText > 0.5 ){
+tr.cells[7].classList.add("warn");
+tr.cells[7].title="Large precentage of unencrypted connections"
+}
+}
+if (nonssl > 10) strfind += "<li>Number of unencrypted connections : <b>"+ nonssl +"</b></li>"
+el=document.createElement("tfoot");
+el.innerHTML = "<th colspan='7'>Active: "+ obj.sess.f1 +", Idle-in-transaction: " + obj.sess.f2 + ", Idle: " + obj.sess.f3 + ", Background: " + obj.sess.f4 + ", Workers: " + obj.sess.f5 + ", Total: " + obj.sess.f6 + "</th>";
+tab.appendChild(el);
+}
+["cpus","mem","strg","wrkld","flsys"].forEach(function(t) {document.getElementById(t).addEventListener("change", (event) => { getreccomendation(); })});
+function getreccomendation(){
+totMem = document.getElementById("mem").value;
+totCPU = document.getElementById("cpus").value;
+wrkld = document.getElementById("wrkld").value;
+flsys = document.getElementById("flsys").value;
+trnsTimout = (wrkld === "oltp") ? 900 :
+(wrkld === "olap") ? 18000 :
+(wrkld === "mixed") ? 3600 : 900;
+checkpars();
+let reccomandations = document.getElementById("paramtune").children[1];
+let reccos = "";
+for (let item of params) {
+if (typeof item.suggest != "undefined"){
+reccos += "<li>" + item.param + " = " + item.suggest + "&emsp;<a href='"+ docurl +"params/" + item.param +".html'>#Explanation</a></li>"
+}
+}
+reccomandations.innerHTML = reccos;
+}
+function flash(msg){
+var el=document.createElement("div");
+el.setAttribute("id", "cur");
+el.setAttribute("style", "position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);");
+el.textContent = msg;
+document.body.appendChild(el);
+setTimeout(() => { el.remove();},2000);
+}
+function copyashtml(){
+let elem = document.getElementById("paramtune");
+let paramtune = elem.cloneNode(true);
+paramtune.style="font-weight:initial;line-height:1.5em;background-color:#FAFFEA;border: 2px solid blue; border-radius: 5px; padding: 1em;box-shadow: 0px 20px 30px -10px grey";
+navigator.clipboard.writeText(paramtune.outerHTML);
+flash("Parameter recommendations are copied to clipboard as HTML code");
+}
+function copyrichhtml(){
+let elem = document.getElementById("paramtune")
+let paramtune = elem.cloneNode(true);
+paramtune.style="font-weight:initial;line-height:1.5em;background-color:#FAFFEA;border: 2px solid blue; border-radius: 5px; padding: 1em;box-shadow: 0px 20px 30px -10px grey";
+const clipboardItem = new ClipboardItem({ "text/plain": new Blob([paramtune.innerText], { type: "text/plain" }),
+"text/html": new Blob([paramtune.outerHTML],{ type: "text/html" })});
+navigator.clipboard.write([clipboardItem]);
+flash("Parameter recommendations are copied to clipboard as HTML Rich object");
+}
+function bytesToSize(bytes,divisor = 1000) {
+const sizes = ["B","KB","MB","GB","TB"];
+if (bytes == 0) return "0B";
+const i = parseInt(Math.floor(Math.log(bytes) / Math.log(divisor)), 10);
+if (i === 0) return bytes + sizes[i];
+return (bytes / (divisor ** i)).toFixed(1) + sizes[i];
+}
+function formatNumber(n) {
+const ranges = [ {divisor: 1e9, suffix: " Billion"}, {divisor: 1e6, suffix: " Million"}, {divisor: 1e3, suffix: " Thousand"} ];
+const range = ranges.find(r => n >= r.divisor);
+return range ? (n/range.divisor).toFixed(1) + range.suffix : n.toString();
+};
+function setheadtip(th,tips){
+for (i in tips) th.cells[i].title = tips[i];
+}
+function updateJson(jsonString, key, value) {
+const jsonObject = JSON.parse(jsonString);
+jsonObject[key] = value;
+return JSON.stringify(jsonObject);
+}
+function DurationtoSeconds(duration){
+let days=0,dayIdx
+dayIdx=duration.indexOf("day")
+if(dayIdx>0){
+days=parseInt(duration.substring(0,dayIdx))
+if(duration[dayIdx+4] == "s") dayIdx=dayIdx+5
+else dayIdx=dayIdx+4
+duration=duration.substring(dayIdx)
+}
+const [hours, minutes, seconds] = duration.split(":");
+return days * 24 * 60 * 60 +(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+};
+var paramDespatch = {
+archive_mode : function(rowref){
+val=rowref.cells[1];
+if(obj.primary == true && val.innerHTML == "off"){ val.classList.add("warn"); val.title="Primary server without WAL archiving configured. No PITR possible"}
+},
+archive_command : function(rowref) {
+val=rowref.cells[1];
+if (obj.params !== null && obj.params.f1 !== null && obj.params.f1.length > 0) { val.classList.add("warn"); val.title="archive_command won't be in-effect, because archive_library : " + obj.arclib + " is specified" }
+else if (val.innerText.includes("barman")){ strfind += "<li><b>Use of Barman is detected</b>. Please be aware of the possible risks, if <code>rsync</code> is used as backup_method. <a href='"+ docurl +"barman.html'> Details<a></li>"; }
+else if (val.innerText.includes("cp ") || val.innerText.includes("rsync ")) { val.classList.add("warn"); strfind +="<li><b>Use of 'cp'/'rsync' command is detected in archive_commnad</b>, which is highly discouraged. Please use reliable backup tools for WAL archiving.<a href='"+ docurl +"cp.html'> Details<a></li></li>" }
+else if (val.innerText.length < 5) {val.classList.add("warn"); val.title="A valid archive_command is expected for WAL archiving, unless archive library is used" ; }
+},
+autovacuum : function(rowref) {
+val=rowref.cells[1];
+if(val.innerText != "on") {
+val.classList.add("warn"); val.title="Autovacuum must be on" ;
+let param = params.find(p => p.param === "autovacuum");
+param["warn"] = "<b>Autovacuum is disabled</b>. This prevents essential maintenance, and can cause bloat and performance issues. Please enable autovacuum. <a href='"+ docurl +"params/autovacuum.html'>Details</a>";
+param["suggest"] = "on";
+}
+},
+autovacuum_max_workers : function(rowref) {
+val=rowref.cells[1];
+if(val.innerText > 3) { val.classList.add("warn"); val.title="High number of workers causes each workers to run slower because of the cost limit" ;
+let param = params.find(p => p.param === "autovacuum_max_workers");
+param["suggest"] = "3";
+}
+},
+autovacuum_vacuum_cost_limit: function(rowref){
+val=rowref.cells[1];
+if(val.innerText > 800 || val.innerText == -1 ) { val.classList.add("warn"); val.title="Better to specify this with a value less than 800" }
+},
+autovacuum_freeze_max_age: function(rowref){
+val=rowref.cells[1];
+autovacuum_freeze_max_age = Number(val.innerText);
+if (autovacuum_freeze_max_age > 800000000) val.classList.add("warn");
+},
+bgwriter_lru_maxpages: function(rowref){
+let param = params.find(p => p.param === "bgwriter_lru_maxpages");
+if (typeof param["suggest"] != "undefined"){
+val = val=rowref.cells[1];
+val.classList.add("warn");
+val.title="bgwriter_lru_maxpages is too low. Increase this to :" + param["suggest"];
+}
+},
+checkpoint_completion_target: function(rowref){
+val=rowref.cells[1];
+if(val.innerText < 0.7) { val.classList.add("warn"); val.title="Low checkpoint_completion_target can cause I/O spikes during checkpoints" ;
+let param = params.find(p => p.param === "checkpoint_completion_target");
+param["suggest"] = "0.9";
+}
+},
+checkpoint_timeout: function(rowref){
+val=rowref.cells[1];
+if(val.innerText < 1200) { val.classList.add("warn"); val.title="Too small gap between checkpoints"
+let param = params.find(p => p.param === "checkpoint_timeout");
+param["suggest"] = "1800";
+}
+},
+client_connection_check_interval :function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "client_connection_check_interval");
+param["suggest"] = "'" + trnsTimout/60 + "s'";
+if(val.innerText == 0) { val.classList.add("warn"); val.title="It is highly recommended to set this to a value between 10 and 60 seconds to detect dead connections and prevent connection pool exhaustion" ;}
+},
+data_directory: function(rowref){
+datadir=val.innerText;
+},
+deadlock_timeout: function(rowref){ val=rowref.cells[1]; val.classList.add("lime"); },
+default_toast_compression: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "default_toast_compression");
+if (val.innerText != "lz4") { val.classList.add("warn"); val.title="Better to use lz4 for TOAST compression";
+param["suggest"] = "lz4";
+}
+},
+effective_cache_size: function(rowref){ val=rowref.cells[1]; val.classList.add("lime"); val.title=bytesToSize(val.innerText*8192,1024); },
+huge_pages: function(rowref){
+val=rowref.cells[1];
+if (val.innerText != "on" ) {
+val.classList.add("warn");
+val.title="Please configure TLBHugePages and set huge_pages=on. This is essential for stability and reliability";
+let param = params.find(p => p.param === "huge_pages");
+param["suggest"] = "on";
+} else val.classList.add("lime");
+},
+huge_page_size: function(rowref){ val=rowref.cells[1]; val.classList.add("lime"); },
+huge_pages_status: function(rowref){ val=rowref.cells[1]; if (val.innerText == "off") { val.classList.add("warn"); val.title="Huge pages are not used"; }
+else val.classList.add("lime"); },
+hot_standby_feedback: function(rowref){ val=rowref.cells[1]; val.classList.add("lime"); },
+idle_session_timeout:function(rowref){
+val=rowref.cells[1];
+if (val.innerText > 0) { val.classList.add("warn"); val.title="It is dangerous to use idle_session_timeout. Avoid using this" }
+},
+idle_in_transaction_session_timeout: function(rowref){
+val=rowref.cells[1];
+if (val.innerText == 0){ val.classList.add("warn"); val.title="Highly suggestable to use atleast 5min to prevent application misbehaviour" }
+let param = params.find(p => p.param === "idle_in_transaction_session_timeout");
+param["suggest"] = "'5min'";
+},
+jit: function(rowref){ val=rowref.cells[1]; if (val.innerText=="on") {
+val.classList.add("warn");
+val.title="Avoid JIT globally (Disable), Use only at smaller scope"
+let param = params.find(p => p.param === "jit");
+param["suggest"] = "off";
+}},
+log_hostname: function(rowref){
+val=rowref.cells[1];
+if (val.innerText == "on"){
+let param = params.find(p => p.param === "log_hostname");
+val.classList.add("warn"); val.title="Unless you are particular about logging the hostnames, better to turn this off to avoid DNS lookup overhead";
+param["suggest"] = "off";
+}},
+log_temp_files: function(rowref){
+val = val=rowref.cells[1];
+let param = params.find(p => p.param === "log_temp_files");
+if (typeof param["suggest"] != "undefined"){
+val.classList.add("warn");
+val.title="Heavy temporary file generation is detected. Consider setting log_temp_files=" + param["suggest"] ;
+} else if ((param["val"] > -1)){
+val.classList.add("lime");
+val.title="log_temp_files is already set. Analyze PostgreSQL log for problematic SQLs. Adjust parameter value if required";
+}
+},
+log_truncate_on_rotation: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "log_truncate_on_rotation");
+if (val.innerText == "off") param["suggest"] = "on";
+},
+log_lock_waits: function(rowref){
+val=rowref.cells[1]; let param = params.find(p => p.param === "log_lock_waits");
+if(val.innerText == "off") param["suggest"] = "on";
+},
+lock_timeout: function(rowref){
+val=rowref.cells[1]; let param = params.find(p => p.param === "lock_timeout");
+if(val.innerText == "0") param["suggest"] = "'1min'";
+},
+maintenance_work_mem: function(rowref){ val=rowref.cells[1]; val.classList.add("lime"); val.title=bytesToSize(val.innerText*1024,1024); },
+max_connections: function(rowref){
+val=rowref.cells[1];
+val.title="Avoid value exceeding 10x of the CPUs"
+let conns = params.find(p => p.param === "max_connections");
+if( totCPU > 0 ){
+if(val.innerText > 10 * totCPU) {
+val.classList.add("warn"); val.title="If there is only " + totCPU + " CPUs, max_connections above " + 10*totCPU + " Is not recommendable for performance and stability";
+conns["suggest"] = 10 * totCPU;
+}else { val.classList.remove("warn"); val.classList.add("lime");
+conns["suggest"] = 10 * totCPU;
+}
+} else if (val.innerText > 500) val.classList.add("warn")
+else val.classList.add("lime")
+},
+max_standby_archive_delay: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "max_standby_archive_delay");
+if (val.innerText > 300000){ val.classList.add("lime"); param["suggest"] = "30000"; val.title="max_standby_archive_delay is too high. could result in replication deylay";}
+else if (val.innerText < 30000){ val.classList.add("warn"); param["suggest"] = "30000"; val.title="max_standby_archive_delay is low. could result in query cancellation";}
+},
+max_standby_streaming_delay: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "max_standby_streaming_delay");
+if (val.innerText > 300000){ param["suggest"] = "30000"; val.classList.add("lime"); val.title="max_standby_streaming_delay is too high. could result in replication deylay";}
+else if (val.innerText < 30000){ val.classList.add("warn"); param["suggest"] = "30000"; val.title="max_standby_streaming_delay is low. could result in query cancellation";}
+},
+max_wal_size: function(rowref){
+val=rowref.cells[1];
+val.title=bytesToSize(val.innerText*1024*1024,1024);
+let param = params.find(p => p.param === "max_wal_size");
+if ( obj.sumry != null){
+let maxwal = obj.sumry.f2 > obj.sumry.f3 ? obj.sumry.f2 : obj.sumry.f3;
+if(val.innerText < maxwal/1048576) { val.classList.add("warn"); val.title += ",Too low compared to WAL generation rate"
+param["suggest"] = "'"+ Math.ceil( maxwal/ 1073741824 / 10) * 10 + "GB'" ;
+}
+}
+if(val.innerText < 8192) { val.classList.add("warn"); val.title += ",Too low for production use"
+param["suggest"] = "8192";
+}
+else val.classList.add("lime");
+},
+min_wal_size: function(rowref){
+val=rowref.cells[1];
+val.title=bytesToSize(val.innerText*1024*1024,1024);
+let param = params.find(p => p.param === "min_wal_size");
+if ( obj.sumry != null){
+let maxwal = obj.sumry.f2 > obj.sumry.f3 ? obj.sumry.f2 : obj.sumry.f3;
+if(val.innerText < maxwal/1048576) { val.classList.add("warn"); val.title += ",Too low compared to WAL generation rate"
+param["suggest"] = "'"+ Math.ceil( maxwal/ 1073741824 / 10) * 10 / 2 + "GB'" ;
+}
+}
+if(val.innerText < 2048) { val.classList.add("warn"); val.title += ",Too low for production use"
+param["suggest"] = "'2GB'";
+}
+else val.classList.add("lime");
+},
+parallel_leader_participation: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "parallel_leader_participation");
+if (wrkld == "oltp" && val.innerText == "off") param["suggest"] = "on";
+else if (wrkld == "olap" && val.innerText == "on") param["suggest"] = "off" ;
+else delete param["suggest"];
+},
+random_page_cost: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "random_page_cost");
+let strg = document.getElementById("strg").value;
+if ( strg == "ssd" ){
+if (val.innerText > 1.2){param["suggest"] = "1.1"; val.classList.add("warn");}
+else val.classList.add("lime");
+} else if ( strg == "san" ){
+if (val.innerText > 1.5){ param["suggest"] = "1.5"; val.classList.add("warn");}
+else val.classList.add("lime");
+} else { param["suggest"] = "4"; val.classList.add("lime")};
+},
+wal_keep_size: function(rowref){
+val=rowref.cells[1];
+val.title=bytesToSize(val.innerText*1024*1024,1024);
+val.classList.add("lime");
+},
+seq_page_cost: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "seq_page_cost");
+if (val.innerText != 1){
+param["suggest"] = "1"; val.classList.add("warn"); val.title="Avoid changing seq_page_cost value to anything other than 1, unless there is an unavoidable reason";
+param["warn"] = "seq_page_cost is specified as <b>" + val.innerText + "</b>. " + val.title;
+}
+},
+server_version: function(rowref){
+val=rowref.cells[1];
+let setval = val.innerText.split(" ")[0]; mgrver=setval.split(".")[0];
+let sver_ver = params.find(p => p.param === "server_version");
+if ( mgrver < Math.trunc(meta.pgvers[0])){
+val.classList.add("warn"); val.title="PostgreSQL Version is outdated (EOL) and not supported";
+sver_ver["warn"] = "<b>Obsolete (End-of-Life) and Unsupported Version: PostgreSQL " + setval + ". IMPORTANT: Security vulnerabilities and bugs in obsolete versions won't be fixed.</b> <a href=https://why-upgrade.depesz.com/show?from="+setval+"&to="+ meta.pgvers.pop() + ">Understand the risk</a> ";
+} else {
+meta.pgvers.forEach(function(t){
+if (Math.trunc(setval) == Math.trunc(t)){
+if (t.split(".")[1] - setval.split(".")[1] > 0 ) { val.classList.add("warn"); val.title = t.split(".")[1] - setval.split(".")[1] + " Pending minor version udpate(s).";
+sver_ver["warn"] = "PostgreSQL <b>Version"+ val.innerText +"." + "</b>";
+if (val.title.length > 0) sver_ver["warn"] += " <b>IMPORTANT: " + val.title + " Database is out of all major compliances and under <a href=https://why-upgrade.depesz.com/show?from="+setval+"&to="+t+">high risk</b></a>";
+}
+}
+})
+}
+if(val.classList.length < 1) val.classList.add("lime");
+},
+shared_buffers: function(rowref){
+val=rowref.cells[1];
+val.classList.add("lime"); val.title=bytesToSize(val.innerText*8192,1024);
+let param = params.find(p => p.param === "shared_buffers");
+if (val.innerText > 16384 && totMem == 8 ) {
+totMem = Math.ceil(val.innerText * 8 * 4 / 1048576);
+} else if (val.innerText == 16384){
+param["suggest"] = "'"+ totMem*0.25 + "'";
+}
+if(parseFloat(document.getElementById("mem").value) != totMem ){
+document.getElementById("mem").value = totMem;
+document.getElementById("cpus").value = Math.ceil(totMem/4);
+console.log("Memory is updated to " + totMem + "GB and CPU to " + Math.ceil(totMem/4));
+}
+if( totMem > 0 && ( totMem < val.innerText*8*0.2/1048576 || totMem > val.innerText*8*0.3/1048576 ))
+{
+val.classList.add("warn"); val.title="Approx. 25% of available memory is recommended, current value of " + bytesToSize(val.innerText*8192,1024) + " appears to be off";
+param["suggest"]= "'"+ totMem*0.25 + "GB'";
+}
+},
+shared_preload_libraries: function(rowref){
+val=rowref.cells[1];
+if (val.innerText.length > 0 ){
+const elements = val.innerText.split(",");
+if (elements.length > 2) { val.classList.add("warn"); val.title="Too many extension libraries loaded. It could affect the performance" }
+if (elements.includes("repmgr")) strfind += "<li><b>Use of repmgr is found.</b> Please consider a more reliable HA framework <a href='"+ docurl +"ha.html'>Details</a></li>"
+}
+},
+statement_timeout : function(rowref){
+val=rowref.cells[1];
+if( val.innerText == 0 ){
+let tmout = params.find(p => p.param === "statement_timeout");
+tmout["suggest"] = "'" + Math.round(trnsTimout / 2) + "s'";
+val.classList.add("warn"); val.title="It is important to set a value globally to avoid long running sessions and associated problems. Please see the the parameter recommendation section"
+}
+},
+synchronous_commit: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "synchronous_commit");
+let syncStnby = params.find(p => p.param === "synchronous_standby_names")
+if (val.innerText == "on" && syncStnby !== undefined && syncStnby.val.trim().length > 0){
+val.classList.remove("lime");
+val.classList.add("warn");
+val.title="synchronous_standby_names is set with synchronous_commit=on, resulting globally synchronous mode. This can cause session hangs, temporary stalls and poor performance. Allow specific sessions or transaction to opt-in for synchronous commit";
+param["suggest"] = "local";
+} else val.classList.add("lime");
+},
+synchronous_standby_names: function(rowref){
+val=rowref.cells[1];
+let syncCommit = params.find(p => p.param === "synchronous_commit")
+if (val.innerText.trim().length > 0 && syncCommit.val == "on"){ val.classList.add("warn"); val.title="Synchronous Standby can cause session hangs, and poor performance";
+let param = params.find(p => p.param === "synchronous_standby_names");
+param["warn"] = "<b>synchronous_standby_names</b> is set and <b>synchronous_commit=on</b>, resulting globally synchronous mode. This can cause session hangs, temporary stalls and poor performance.<br/> Consider using asynchronous replication only if its unavoidable and with a limited scope. <a href='"+ docurl +"params/synchronous_standby_names.html'> Details<a>";
+evalParam("synchronous_commit");
+}
+},
+track_io_timing: function(rowref){
+val=rowref.cells[1];
+if (val.innerText == "off"){
+val.classList.add("warn"); val.title="There is no good reason for track_io_timing to be off on any modern hardware. It is recommended to be on";
+let param = params.find(p => p.param === "track_io_timing");
+param["suggest"] = "on";
+}
+},
+transaction_timeout: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "transaction_timeout");
+param["suggest"] = "'" + trnsTimout + "s'";
+if(val.innerText == 0) { val.classList.add("warn"); val.title="Avoid disabling transaction_timeout to prevent hangs, sometimes cascaded hangs";}
+},
+wal_compression: function(rowref){
+val=rowref.cells[1]; val.classList.add("lime");
+if(totCPU > 3){
+if (val.innerText == "off") { val.classList.add("warn"); val.title="Consider enabling wal_compression for better performance"
+let param = params.find(p => p.param === "wal_compression");
+param["suggest"] = "'on'";
+if (mgrver >= 15) {
+param["warn"] = "<b>wal_compression is '"+ val.innerText+"' on PostgreSQL "+ mgrver +".</b> 'lz4' or 'zstd' is recommended, if available. <a href='"+ docurl +"params/wal_compression.html'> Details<a>"
+param["suggest"] = "'lz4'";
+}
+}
+}
+},
+wal_init_zero: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "wal_init_zero");
+if (flsys == "cow" && val.innerText == "on") {
+val.classList.add("warn"); val.title="wal_init_zero is not recommended for Copy-on-Write filesystems (like ZFS, BTRFS, etc).";
+param["suggest"] = "off";
+} else if (flsys == "rglr" && val.innerText == "off") {
+val.classList.add("warn"); val.title="wal_init_zero is recommended for regular filesystems (like ext4, xfs, etc).";
+param["suggest"] = "on";
+} else {
+val.classList.remove("warn");
+delete param["suggest"]
+}
+},
+wal_recycle: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "wal_recycle");
+if (flsys == "cow" && val.innerText == "on") {
+val.classList.add("warn"); val.title="wal_recycle is not recommended for Copy-on-Write filesystems (like ZFS, BTRFS, etc).";
+param["suggest"] = "off";
+} else if (flsys == "rglr" && val.innerText == "off") {
+val.classList.add("warn"); val.title="wal_recycle is recommended for regular filesystems (like ext4, xfs, etc).";
+param["suggest"] = "on";
+} else {
+val.classList.remove("warn");
+delete param["suggest"]
+}
+},
+wal_sync_method: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "wal_sync_method");
+if (val.innerText != "fdatasync" && val.innerText != "open_datasync"){
+val.classList.add("warn"); val.title="'fdatasync' is recommended for wal_sync_method, unless there is a specific reason to use others";
+param["suggest"] = "fdatasync";
+} else val.classList.add("lime");
+},
+work_mem: function(rowref){
+val=rowref.cells[1];
+val.title=bytesToSize(val.innerText*1024,1024) ;
+if(val.innerText > 98304){ val.classList.add("warn"); val.title += ", Avoid global settings above 64MB to avoid memory related issues" }
+else val.classList.add("lime");
+let conns = params.find(p => p.param === "max_connections");
+let wmem = params.find(p => p.param === "work_mem");
+if ( totMem > 0.2 && conns.val > 1){
+wmem["suggest"] = "'" + Math.min(parseInt(totMem*1024/(5*parseInt(conns.val)) + 4 ),64) + "MB'";
+}
+},
+wal_sender_timeout: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "wal_sender_timeout");
+if(val.innerText == 0) { val.classList.add("warn"); val.title="Avoid disabling wal_sender_timeout to prevent hangs, sometimes cascaded hangs";
+param["suggest"] = "'1min'";
+}
+},
+zero_damaged_pages: function(rowref){
+val=rowref.cells[1];
+let param = params.find(p => p.param === "zero_damaged_pages");
+if(val.innerText == "on") { val.classList.add("warn"); val.title="zero_damaged_pages should be off to avoid data corruption going unnoticed";
+param["suggest"] = "off";
+param["warn"] = "<b>zero_damaged_pages is 'on'</b>. This setting can lead to silent data loss by replacing corrupted pages with zeroed pages. It is strongly recommended to set this parameter to 'off' to ensure data integrity.";
+}
+},
+default : function(rowref) {}
+};
+var evalParam = function(param,rowref = null) {
+if (rowref != null && rowref.id == "") rowref.id=param;
+else rowref = document.getElementById(param);
+if (rowref == null) return;
+if (paramDespatch.hasOwnProperty(param)){
+let paramJson = {}; paramJson["param"] = param; paramJson["val"] = rowref.cells[1].innerText;
+params.push(paramJson);
+paramDespatch[param](rowref);
+}
+}
+function checkpars(){
+tab=document.getElementById("params")
+tab.caption.innerHTML="<span>Parameters</span>"
+trs=tab.rows
+if (document.getElementById("params").rows.length > 1)
+for(var i=1;i<trs.length;i++) evalParam(trs[i].cells[0].innerText,trs[i]);
+else { strfind += "<li><b>PARTIAL DATA COLLECTION. MAKE SURE TO RUN gather.sql SCRIPT USING AN ACCOUNT WITH THE REQUIRED PERMISSIONS AND WAIT FOR COMPLETION</b></li>"; return 1; }
+}
+function aged(cell){
+if(cell.innerHTML > autovacuum_freeze_max_age && cell.innerHTML > 200000000 ){ cell.classList.add("warn"); cell.title = Number(cell.innerText).toLocaleString("en-US"); }
+}
+function checktabs(){
+const startTime =new Date().getTime();
+tab=document.getElementById("tabInfo")
+tab.caption.innerHTML="<span>Tables</span> in '" + obj.dbts.f1 + "' DB. <a href="+ docurl +"tableinfo.html>🗎</a>";
+const trs=document.getElementById("tabInfo").rows
+const len=trs.length;
+let bloatTabTot = 0;
+let bloatTotSize = 0;
+let TotTabIndSize=0;
+setheadtip(trs[0],["Table Name and its OID","","Namespace / Schema OID","Bloat in Percentage","No. Live Rows/Tuples","No. Dead Rows/Tuples","Dead/Live ratio","Table (main fork) size in bytes",
+"Total Table size (All forks + TOAST) in bytes","Total Table size + Associated Indexes size in bytes","Age of main relation","","","Number of Vacuums per day","","Size of TOAST and its index",
+"Age of TOAST","Age of Table & TOAST","Number of Blocks Read/Fetched","Cache hit while reading","Time of last usage"]);
+[10,16,17].forEach(function(num){trs[0].cells[num].title+=". (Age of unfrozen tuple. Indication of the need for VACUUM FREEZE). Current autovacuum_freeze_max_age=" + autovacuum_freeze_max_age.toLocaleString("en-US")})
+for(var i=1;i<len;i++){
+tr=trs[i]; let TotTab=tr.cells[8]; TotTabSize=Number(TotTab.innerHTML); TabInd=tr.cells[9]; TabIndSize=(TabInd.innerHTML);
+if(TotTabSize > 5000000000 ) { TotTab.classList.add("lime"); TotTab.title = bytesToSize(TotTabSize) + "\nBig Table, Consider Partitioning, Archive+Purge";
+} else TotTab.title=bytesToSize(TotTabSize);
+if( TabIndSize > 2*TotTabSize && TotTabSize > 2000000 ){ TabInd.classList.add("warn"); TabInd.title="Indexes of : " + bytesToSize(TabIndSize-TotTabSize) + " is " + ((TabIndSize-TotTabSize)/TotTabSize).toFixed(2) + "x of Table " + bytesToSize(TotTabSize) + "\n Total : " + bytesToSize(TabIndSize)
+} else TabInd.title=bytesToSize(TabIndSize);
+if (TabIndSize > 10000000000) TabInd.classList.add("lime");
+TotTabIndSize += Number(TabIndSize);
+if (tr.cells[3].innerText >0 && TabIndSize > 0) { bloatTotSize += TabIndSize * (tr.cells[3].innerText / 100) }
+if (tr.cells[3].innerText > 20 && TabIndSize > 5242880) { tr.cells[3].classList.add("warn"); bloatTabTot++; }
+if (tr.cells[13].innerText / obj.dbts.f4 > 12){ tr.cells[13].classList.add("warn"); tr.cells[13].title="Too frequent vacuum runs : " + Math.round(tr.cells[13].innerText / obj.dbts.f4) + "/day"; }
+if (tr.cells[15].innerText > 10000) {
+tr.cells[15].title=bytesToSize(Number(tr.cells[15].innerText));
+if (tr.cells[15].innerText > 10737418240) tr.cells[15].classList.add("warn")
+else tr.cells[15].classList.add("lime")
+}
+aged(tr.cells[10]);
+aged(tr.cells[16]);
+aged(tr.cells[17]);
+if (tr.cells[18].innerText / obj.dbts.f4 > 262144 ){
+tr.cells[18].classList.add("lime");
+tr.cells[18].title="High Utilization : " + bytesToSize(Math.round(tr.cells[18].innerText * 8192 / obj.dbts.f4)) + "/day";
+if(tr.cells[19].innerText < 40 ){ tr.cells[19].classList.add("warn"); tr.cells[19].title="Poor cache hit ratio, Results in high DiskReads"; }
+else if (tr.cells[19].innerText < 70) tr.cells[19].classList.add("lime");
+}
+}
+var el=document.createElement("tfoot");
+el.innerHTML = "<th colspan=6> Total Bloat Estimate = "+ bytesToSize(bloatTotSize) +" </th><th></th><th colspan=3> Total Size = "+ bytesToSize(TotTabIndSize) +" </th><th colspan=11></th>";
+tab.appendChild(el);
+const endTime = new Date().getTime();
+obj.tabs.bloatTabNum = bloatTabTot;
+console.log("time taken for checktabs :" + (endTime - startTime));
+}
+function checktabPart(){
+const tab=document.getElementById("tabPart");
+tab.caption.innerHTML="<span>Partitioned Tables</span> in '" + obj.dbts.f1 + "' DB";
+if (tab.rows.length < 2){ tab.tBodies[0].innerHTML="No Partitioned tables found."; return;}
+const trs=tab.rows
+setheadtip(trs[0],["Partitioned Table Name","","Type of Partitioning (Declerative vs Inheritance)","No. of Partitions","Total Table Size","Total Index Size","Precentate of fetches coming from a single partition (bigger the better)"]);
+const len=trs.length;
+if (len > 4) strfind += "<li><b>"+ (len-1).toString() +" Partitioned Tables found.</b> Please check the partitioning strategy and its effectiveness. <a href='"+ docurl +"partition.html'>Details</a></li>"
+for(var i=1;i<len;i++){
+tr=trs[i];
+if (tr.cells[3].innerText > 16 ) { tr.cells[3].classList.add("lime"); tr.cells[3].title = "Ensure proper partition pruning in SQL statements";
+} else if (tr.cells[3].innerText == 0 ) { tr.cells[3].classList.add("warn"); tr.cells[3].title = "No Partitions found"; }
+if (tr.cells[4].innerText/tr.cells[3].innerText > 5368709120) { tr.cells[4].classList.add("warn"); tr.cells[4].title = "Average per partition size is :" + bytesToSize(tr.cells[4].innerText/tr.cells[3].innerText) ; }
+}
+}
+function checkdbs(){
+const trs=document.getElementById("dbs").rows
+const len=trs.length;
+let aborts=[];
+let strtmp="";
+setTitles(trs[0],["Database Name","","Avg. No. of commits per day","Avg. No. of Aborts/Rollbacks per day","Avg. DML Operations per day","Cache Hit Ratio (%)","Avg. No. Temp files generated per day","Avg Temp File Size in bytes per day","Database size in bytes","Age of unfrozen tuples in database"]);
+for(var i=1;i<len;i++){
+tr=trs[i];
+if(obj.dbts !== null && tr.cells[0].innerHTML == obj.dbts.f1){
+tr.cells[0].classList.add("lime");
+if (obj?.meta?.f2 != null && obj.meta.f2 < tr.cells[8].innerText){
+strfind += "<li><b>Total size of all objects in database is : " + bytesToSize(obj.meta.f2) + ". However, the database occupies " + bytesToSize(tr.cells[8].innerText) + "</b>. This possibly indicates orphaned objects. <a href='"+ docurl +"orphanfiles.html'> Details<a></li>"
+tr.cells[8].classList.add("high"); tr.cells[8].title="Database size mismatch. Size of all objects is " + bytesToSize(obj.meta.f2) + ", but database size is " + bytesToSize(tr.cells[8].innerText) ;
+}
+}
+if(tr.cells[3].innerHTML > 4000){ tr.cells[3].classList.add("warn"); tr.cells[3].title = "High number of transaction aborts/rollbacks. Please inspect PostgreSQL logs";
+aborts.push(tr.cells[0].innerHTML)
+}
+[7,8].forEach(function(num) { if (tr.cells[num].innerText > 1048576) { if(tr.cells[num].classList.length < 1) tr.cells[num].classList.add("lime"); } });
+if(tr.cells[7].innerHTML > 50000000000) {
+tr.cells[7].classList.remove("lime"); tr.cells[7].classList.add("warn");
+let str = " temp file generation per day!. This can cause I/O performance issues. "
+let param = params.find(p => p.param === "log_temp_files");
+if ( param && param["val"] == -1 ) {
+param["suggest"] = "'100MB'";
+str += "Consider setting log_temp_files=" + param["suggest"] + " to collect the problematic SQL statements to PostgreSQL logs";
+}else{
+str += "log_temp_files is already enabled. Analyze the PostgreSQL logs to check the problematic SQL statements";
+}
+evalParam("log_temp_files");
+if (strtmp != "") strtmp+= ","
+strtmp += bytesToSize(tr.cells[7].innerText) +"/day on "+tr.cells[0].innerHTML;
+tr.cells[7].title += str;
+}
+totdb=totdb+Number(tr.cells[8].innerText);
+aged(tr.cells[9]);
+}
+if (aborts.length >0)
+strfind += "<li>High number of transaction aborts/rollbacks in databases : <b>" + aborts.toString() + "</b>, please inspect PostgreSQL logs for more details</li>" ;
+if (strtmp != "") strfind += "<li>High temp file generation : <b>" + strtmp + "</b></li>";
+var el=document.createElement("tfoot");
+el.innerHTML = "<th colspan='9'>**Averages are Per Day. Total size of "+ (document.getElementById("dbs").tBodies[0].rows.length - 1) +" DBs : "+ bytesToSize(totdb) +"</th>";
+dbs=document.getElementById("dbs");
+dbs.appendChild(el);
+}
+function checkextn(){
+const tab=document.getElementById("tblextn");
+tab.caption.innerHTML="<span>Extensions</span> in '" + obj.dbts.f1 + "' DB"
+const trs=tab.rows
+const len=trs.length;
+let riskyExtn=[];
+if (len > 4) strfind += "<li><b>"+ (len-1).toString() +" Additional Extensions found.</b> Extensions can cause considerable overhead and performance degradataion. <a href='"+ docurl +"extensions.html'>Details</a></li>"
+for(var i=1;i<len;i++){
+tr=trs[i];
+if (meta.riskyExtn.includes(tr.cells[1].innerHTML)){ tr.cells[1].classList.add("warn"); tr.cells[1].title = "Risky to use in mission critical systems without support aggrement. Crashes are reported" ; }
+else if (!meta.commonExtn.includes(tr.cells[1].innerHTML)) tr.cells[1].classList.add("lime");
+}
+}
+function checkusers(){
+tab=document.getElementById("tblusr");
+tab.caption.innerHTML="<span>Users/Roles</span>  and connections"
+const trs=tab.rows
+let supr=0;
+for (var i=1;i<trs.length;i++){
+tr=trs[i];
+if(tr.cells[2].innerText == "t"){
+tr.cells[2].classList.add("lime");
+tr.cells[2].title = "Super User"
+supr++;
+}
+if(tr.cells[5].innerText == "MD5"){
+tr.cells[5].classList.add("warn");
+tr.cells[5].title="Consider switching to SCRAM for better security whever possible"
+}
+}
+if (supr > 2 ) strfind += "<li>There are <b>" + supr + " Super user accounts</b>, consider this from the security standpoint</li>"
+}
+function checkhba(){
+tab=document.getElementById("tblhba");
+tab.caption.innerHTML="<span>HBA rules</span> analysis for security"
+const trs=tab.rows
+let shadowed=0,errs=0;
+for (var i=1;i<trs.length;i++){
+tr=trs[i];
+if (!["::1","127.0.0.1","","samehost"].includes(tr.cells[4].innerText.trim()) && tr.cells[8].innerText.trim() != "reject" ){
+if(tr.cells[7].innerText == "IPv4"){
+if(tr.cells[5].innerText < 24){
+tr.cells[5].classList.add("warn");
+tr.cells[5].title="Avoid keeping the subnet mask wide open"
+} else if(tr.cells[5].innerText < 32) tr.cells[5].classList.add("lime")
+if(tr.cells[8].innerText == "md5"){
+tr.cells[8].classList.add("warn");
+tr.cells[8].title="Consider switching to SCRAM (scram-sha-256) for better security whever possible"
+}else if(tr.cells[8].innerText == "trust"){
+tr.cells[8].classList.add("warn");
+tr.cells[8].title="Avoid blindly trusting connection from outside"
+}
+}
+if(tr.cells[4].innerText == "all"){
+tr.cells[4].classList.add("warn");
+tr.cells[4].title="Avoid allowing connetions from all addresses"
+} else tr.cells[4].classList.add("lime")
+}
+if (tr.cells[9].innerText.trim() != ""){
+tr.cells[9].classList.add("high");
+tr.title="Error in this rule. " + tr.cells[9].innerText.trim();
+errs++;
+}
+if(tr.cells[11].innerText.trim() != ""){
+tr.cells[11].classList.add("warn");
+tr.cells[0].classList.add("high");
+tr.title="This rule is in shadow of the previous rule(s) and will never be used"
+shadowed++;
+}
+}
+if (shadowed > 0) strfind += "<li><b>" + shadowed + " shadowed HBA rules detected</b>, which will never be used. Please review the rules for pg_hba carfully and remove the shadowed ones. Refer <a href=#tblhba>HBA rules</a> section</li>";
+if (errs > 0) strfind += "<li><b>" + errs + " erroneous HBA rules detected</b>, please review the rules for pg_hba carfully and fix the errors. Refer <a href=#tblhba>HBA rules</a> section</li>";
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
+const table = th.closest("table");
+th.style.cursor = "progress";
+var el=document.createElement("div");
+el.setAttribute("id", "cur");
+if (this.asc) el.textContent = "⬆";
+else el.textContent = "⬇";
+th.appendChild(el);
+setTimeout(() => { el.remove();},1000);
+setTimeout(function (){
+Array.from(table.querySelectorAll("tr:nth-child(n+2)")).sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc)).forEach(tr => table.appendChild(tr) );
+setTimeout(function(){th.style.cursor = "pointer";},10);
+},50);
+})));
+function dbsdtls(e){
+let td = e.target;
+if (e.target.matches("tr td:first-child")){
+th = e.target.parentNode;
+let o=th.cells[1].innerText.split(",");
+let str= th.cells[0].classList.contains("lime")?" (pg_gather connected)<br/>":""
+return "<b>" + th.cells[0].innerText + "</b>" + str +
+"<c> Inserts per day : " + o[0] + "</c><c>Updates per day : " + o[1] + "</c><c>Deletes per day : "
++ o[2] + "</c><c>Stats Reset : " + o[3] + "</c><c>DB oid(dbid) :" + o[4] + "</c><c>Multi Txn Id Age :" + o[5] + "</c>"
++ "<c>Encoding : " + o[6] + "</c><c>Collation : " + o[7] + "</c>";
+}else{
+if (td.tagName == "TH") return "";
+let thIndex = td.cellIndex;
+let thVal = td.innerText;
+if ([2, 3, 4, 6, 9].includes(thIndex)) return formatNumber(thVal);
+else if ([7,8].includes(thIndex)) return bytesToSize(thVal) + "<br>" + td.title.replaceAll(". ", ".<br>");
+else return "";
+}
+}
+function tabInfodtls(e){
+let td = e.target;
+let tr = td.parentNode;
+if (e.target.matches("tr td:first-child")){
+let o=tr.cells[1].innerText.split(",");
+let vac=tr.cells[13].innerText;
+let ns=obj.ns.find(el => el.nsoid === JSON.parse(tr.cells[2].innerText).toString());
+let str=""
+if (o[10] == "r") str += "<c>Inheritance Partition of : " + o[9] + "</c>";
+if (o[10] == "p") str += "<c>Native Partition of : " + o[9] + "</c>";
+if (o[5] !== null) str += "<c>Total Indexes: " + o[5] + "</c>";
+if (o[6] !== null) str += "<c>Unused Indexes: " + o[6] + "</c>";
+str += (o[7] > 0) ? "<c>Primary key: Exists</c>" : "<c>No Primary key</c>";
+if (o[8]-o[7] > 0) str += "<c>Unique keys (than PK): " + (o[8]-o[7]) + "</c>";
+let days=(obj.dbts.f4 < 1) ? 1 : obj.dbts.f4;
+if (vac > 0) str +="<c>Vacuums / day : " + Number(vac/days).toFixed(1) + "</c>";
+str += "<c>Inserts / day : " + Math.round(o[1]/days) + "</c>";
+str += "<c>Updates / day : " + Math.round(o[2]/days) + "</c>";
+str += "<c>Deletes / day : " + Math.round(o[3]/days) + "</c>";
+str += "<c>HOT.updates / day : " + Math.round(o[4]/days) + "</c>";
+str += "<c>Rel.filename : " + o[11] + "</c>";
+if (o[12] < 16384) str += "<c>Tablespace : pg_default </c>";
+else{
+let tbsp = obj.tbsp.find(el => el.tsoid === JSON.parse(o[12]).toString());
+str += "<c>Tablespace : " + o[12] + " (" + tbsp.tsname + " : " + tbsp.location + ")</c>";
+}
+if (o[13] !== null ) str += "<c>Current Settings : " + o[13] + "</c>";
+if(o[2] > 0 || vac/days > 50){
+str += "<br><b><u>RECOMMENDATIONS : </u></b>"
+if (o[2] > 0) str += "<c>FILLFACTOR :" + Math.round(100 - 20*o[2]/(o[2]+o[1])+ 20*o[2]*o[4]/((o[2]+o[1])*o[2])); + "</c>"
+if (vac/days > 50) {
+let threshold = Math.round((Math.round(o[2]/days) + Math.round(o[3]/days))/48);
+if (threshold < 500) threshold = 500;
+str += "<c>AUTOVACUUM : autovacuum_vacuum_threshold = "+ threshold +", autovacuum_analyze_threshold = " + threshold + "</c>"
+}}
+return "<b>" + tr.cells[0].innerText + "</b><c>OID : " + o[0] + "</c><c>Schema : " + ns.nsname + "</c>" + str;
+}else{
+if (td.tagName == "TH") return "";
+let thIndex = td.cellIndex;
+let thVal = td.innerText;
+if ([7, 8, 9, 15].includes(thIndex)) return bytesToSize(thVal);
+else if ([4, 10, 16, 17].includes(thIndex)) return formatNumber(thVal);
+else return "";
+}
+}
+function tblsessdtls(e){
+if (e.target.matches("tr td:first-child")){
+th = e.target.parentNode;
+let o=JSON.parse(th.cells[1].innerText); let str="";
+if (o.f1 !== null) str += "Database :" + o.f1 + "<br/>";
+if (o.f2 !== null && o.f2.length > 1 ) str += "Application :" + o.f2 + "<br/>";
+if (o.f3 !== null) str += "Client Host :" + o.f3 + "<br/>";
+if (o.f4 != null) str += "Communication :" + o.f4 + "<br/>";
+if (o.f5 != null) str += "Workers :" + o.f5 + "<br/>";
+if (typeof o.f6 != "undefined") str += "<div class=warn>" + o.f6 + "<div>";
+if (str.length < 1) str+="Independent/Background process";
+return str;
+}
+}
+function tblusrdtls(e){
+if (e.target.matches("tr td:first-child")){
+let td = e.target;
+let tr = td.parentNode;
+if (tr.cells[1].innerText.length > 2){
+let o=JSON.parse(tr.cells[1].innerText); let str="<b><u>Connections per DB by user '"+tr.cells[0].innerText+"'</u></b><br>";
+for(i=0;i<o.length;i++){
+str += (i+1).toString() + ". Database:" + o[i].f1 + " Active:" + o[i].f2 + ", IdleInTrans:" + o[i].f3 + ", Idle:" + o[i].f4 + " <br>";
+}
+return str
+} else return "No connections"
+}}
+function tblcsdtls(e){
+if (e.target.matches("tr td:first-child")){
+let td = e.target;
+let tr = td.parentNode;
+if(tr.cells[1].innerText.length > 2){
+let o=JSON.parse(tr.cells[1].innerText); let str="<b><u>User connections to DB \'"+ tr.cells[0].innerText +"'</u></b><br>";
+for(i=0;i<o.length;i++){
+str += (i+1).toString() + ". User:" + o[i].f1 + " Active:" + o[i].f2 + ", IdleInTrans:" + o[i].f3 + ", Idle:" + o[i].f4 + " <br>";
+}
+return str
+} else return "No connections"
+}}
+/*
+async function tblDBTimedtls(e){
+if (e.target.matches("tr td:first-child")){
+td = e.target;
+const htmlString = await fetchWithTimeout(docurl + "events/" + td.innerText.toUpperCase() + ".html", 5000)
+.then(res => res.text())
+.then(htmlString => {
+if (td.matches(":hover"))
+td.appendChild(genPopup( htmlString + "<h4><a href="+ docurl + "events/" + td.innerText.toUpperCase() +">🔗</a><h4>") );
+})
+.catch(error => {
+console.error("Error fetching wait events", error);
+});
+return;
+}
+}*/
+let hoverTimer;
+async function tblDBTimedtls(e) {
+if (e.target.matches("tr td:first-child")) {
+const td = e.target;
+clearTimeout(hoverTimer);
+hoverTimer = setTimeout(async () => {
+if (!td.matches(":hover")) return;
+try {
+const response = await fetchWithTimeout(docurl + "events/" + td.innerText.toUpperCase() + ".html", 5000);
+const htmlString = await response.text();
+if (td.matches(":hover")) {
+const popupContent = htmlString + "<h4><a href=" + docurl + "events/" + td.innerText.toUpperCase() + ">🔗</a><h4>";
+td.appendChild(genPopup(popupContent));
+}
+} catch (error) {
+console.error("Error fetching wait events", error);
+}
+}, 500);
+td.addEventListener("mouseleave", () => clearTimeout(hoverTimer), { once: true });
+}
+}
+function tabPartdtls(e){
+if (e.target.matches("tr td:first-child")){
+th = e.target.parentNode;
+let o=th.cells[1].innerText.split(",");
+let str = "";
+if (o[0]) str += "<c>Default Parittion :" + o[0] + "<c>";
+else if(th.cells[3].innerText > 0) str+="<c class=lime>No Default Partition Found<c>";
+if (o[1] && o[1]>1) str += "<c class=warn>"+ o[1] + "rows/tuples in the default partition<c>"
+return str;
+}
+}
+function tbliostatdtls(e){
+let td = e.target;
+let columnIndex = td.cellIndex;
+if (td.matches("tr th")) return td.title;
+if (mgrver < 18){
+if ([1,2,3,4,5,6].includes(columnIndex) && td.innerText > 0) return bytesToSize(td.innerText) + " per day";
+else if ([7,8].includes(columnIndex) && td.innerText > 0) return formatNumber(td.innerText) + " times per day";
+else return "";
+}else{
+if ([2,4,5,7].includes(columnIndex) && td.innerText > 0){ let retval = ""
+retval = bytesToSize(td.innerText) + " per day"
+if (td.previousElementSibling.innerText >0 && columnIndex != 5 ) retval += " (Avg. " + bytesToSize(Math.round(td.innerText/td.previousElementSibling.innerText)) + " per I/O)"
+return retval;
+}
+else if ([1,3,6,8,9,10,11].includes(columnIndex) && td.innerText > 0) return formatNumber(td.innerText) + " times per day";
+else return "";
+}
+}
+function genPopup(str){
+var el = document.createElement("div");
+el.setAttribute("id", "dtls");
+el.setAttribute("align", "left");
+el.style.cssText += "left: 100%; top: 80%; margin-left: -4px;";
+/*if (td.align != "left") {
+el.style.cssText += "left: 100%; top: 80%";
+} else {
+computedStyle=window.getComputedStyle(td);
+canvascontext.font = computedStyle.fontStyle + " " + computedStyle.fontWeight + " " + computedStyle.fontSize + " " + computedStyle.fontFamily;
+el.style.left=canvascontext.measureText(td.textContent).width+8+"px";
+}*/
+el.addEventListener("mouseleave", (event) => {
+if (!el.parentNode.contains(event.relatedTarget)) el.remove();
+})
+el.innerHTML= str;
+return el;
+}
+document.querySelectorAll(".thidden, #tbliostat").forEach(table => {
+table.addEventListener("mouseenter", (e) => {
+let str = ""
+const td = e.target;
+if (td.innerText.trim().length < 1 ) return;
+if (typeof window[e.currentTarget.id + "dtls"] === "function") {
+str = window[e.currentTarget.id + "dtls"](e);
+}
+if ( str && typeof(str) == "string" ) {
+td.appendChild(genPopup(str));
+}
+}, true);
+table.addEventListener("dblclick", function(event) {
+if (event.target.matches("tr td:first-child")) {
+navigator.clipboard.writeText(event.target.children[0].innerText);
+flash("Details copied to clipboard");
+}
+});
+table.addEventListener("mouseleave", (e) => {
+if (e.target.matches("tr td,tr th") && e.target.children[0]?.id === "dtls")
+e.target.children[0]?.remove();
+}, true);
+});
+let elem=document.getElementById("bottommenu")
+elem.onmouseover = function() { document.getElementById("menu").style.display = "block"; }
+elem.onclick = function() { document.getElementById("menu").style.display = "none"; }
+elem.onmouseout = function() { document.getElementById("menu").style.display = "none"; }
+document.querySelectorAll("#tblsess tr td:nth-child(6) , #tblstmnt tr td:nth-child(2)").forEach(td => td.addEventListener("dblclick", (() => {
+if (td.title){
+navigator.clipboard.writeText(td.title).then(() => {
+flash("SQL text is copied to clipboard");
+});
+}
+})));
+function checkindex(){
+tab=document.getElementById("IndInfo")
+tab.caption.innerHTML="<span>Indexes</span> in '" + obj.dbts.f1 + "' DB"
+trs=tab.rows;
+for (let tr of trs) {
+if(tr.cells[5].innerText == 0) {tr.cells[5].classList.add("warn"); tr.cells[5].title="Unused Index"}
+tr.cells[6].title=bytesToSize(Number(tr.cells[6].innerText));
+if(tr.cells[6].innerText > 2000000000) tr.cells[6].classList.add("lime");
+if(tr.cells[7].innerText > 262144 && tr.cells[7].innerText/tr.cells[5].innerText > 50 ) {
+if (tr.cells[5].innerText > 0 ){
+tr.cells[7].title="Each Index scan had to fetch " + Math.round(tr.cells[7].innerText/tr.cells[5].innerText) + " pages on average. Expensive Index";
+}else tr.cells[7].title="Unused indexes. But causing fetches without any benefit";
+tr.cells[7].classList.add("warn");
+if (tr.cells[8].innerText < 50 ){tr.cells[8].classList.add("warn");tr.cells[8].title="Poor Cache Hit";}
+else if (tr.cells[8].innerText < 80 ) {tr.cells[8].classList.add("lime");tr.cells[8].title="Indexes with less cache hit can cause considerable I/O"; }
+}
+}
+}
+function checkdbtime(){
+tab=document.getElementById("tblDBTime")
+tab.caption.innerHTML="<span>DB Server Time</span> - Wait-events, CPU time and Delays (<a href="+docurl+"waitevents.html>Reference</a>)"
+trs=tab.rows;
+let counters = {"Activity": 0,"BufferPin": 0,"Client": 0,"CPU": 0,"Extension": 0,"IO": 0,"IPC": 0,"LWLock": 0,"Lock": 0,"Timeout": 0,"Other": 0};
+let tempstr=""
+let newElement;
+if (trs.length > 1){
+maxevnt=Number(trs[1].cells[2].innerText);
+for (let tr of trs) {
+if (tr.rowIndex === 0) continue;
+evnts=tr.cells[2];
+const eventType = eventMaps.get(tr.cells[0].innerText.toUpperCase());
+if (eventType in counters) {
+counters[eventType] += Number(evnts.innerText);
+} else {
+counters["Other"] += Number(evnts.innerText);
+console.warn("Unknown event type for:", tr.cells[0].innerText);
+}
+if (evnts.innerText*1500/maxevnt > 1){
+const newBar = document.createElement("div");
+newBar.className = "bar";
+newBar.style.width = (evnts.innerText * 1500 / maxevnt).toFixed(1) + "px";
+newBar.style.borderColor = colorMaps.get(eventMaps.get(tr.cells[0].innerText.toUpperCase()));
+evnts.appendChild(newBar);
+}
+if (tr.cells[0].innerText == "CPU" && evnts.innerText > 100) tempstr = "CPU usage is equivalent to " + (evnts.innerText*1.2/2000).toFixed(1) + " CPU cores (approx). "
+}
+const totalEvents = Object.values(counters).reduce((sum, count) => sum + count, 0);
+/*** BEGIN : Footer section creation ***/
+tf=document.createElement("tfoot");
+tf.innerHTML = "<tr><th colspan='2'>"+ tempstr +" </th></tr>";
+th=tf.children[0].children[0];
+th.innerHTML += "<div style=max-width:800px;margin:auto;background-color:white><h3>Wait-Event Catagory Chart</h3><div class=bar-chart></div></div>";
+let chartDiv=th.children[0].children[1];
+/**** Create vertical bars for each wait-event catagory as single html text. Then add it to "bar-chart" area created above ***/
+let htmlContent = "";
+for (const [key, value] of Object.entries(counters)) {
+if (value > 0){
+let percentage = Math.round((totalEvents > 0) ? ((value / totalEvents) * 100) : 0);
+htmlContent += "<div class=bar-group><div class=vbar style=height:" + percentage +"%;background-color:"+ colorMaps.get(key) +"><span>" + percentage + "%</span></div><div class=bar-label>" + key + "</div></div>"
+}
+}
+chartDiv.innerHTML = htmlContent;
+tab.appendChild(tf);
+}else {
+tab.tBodies[0].innerHTML="No Wait Event information or CPU usage information is available, Probably the PostgreSQL is completely idle or data collection failed"
+}
+}
+function checksess(){
+tab=document.getElementById("tblsess")
+tab.caption.innerHTML="<span>Sessions</span>"
+trs=tab.rows;
+for (let tr of trs){
+pid=tr.cells[0]; sql=tr.cells[5]; xidage=tr.cells[8]; stime=tr.cells[10];
+if(xidage.innerText > 20) xidage.classList.add("warn");
+if (blokers.indexOf(Number(pid.innerText)) > -1){ pid.classList.add("high"); pid.title="Blocker";
+tr.cells[1].innerText = updateJson( tr.cells[1].innerText , "f6", "Blocker")
+};
+if (blkvictims.indexOf(Number(pid.innerText)) > -1) {
+pid.classList.add("warn");
+tr.cells[1].innerText = updateJson( tr.cells[1].innerText , "f6", "Victim of Blocker: " + obj.victims.find(el => el.f1 == pid.innerText).f2.toString())
+};
+if(DurationtoSeconds(stime.innerText) > 300 && tr.cells[7].innerText.length > 3) stime.classList.add("warn");
+if (sql.innerText.length > 100 && !sql.innerText.startsWith("**") ){
+sql.title = sql.innerText;
+sql.innerText = sql.innerText.substring(0, 100);
+};
+}}
+function checkstmnts(){
+let tab= document.getElementById("tblstmnt");
+tab.caption.innerHTML = "<span>Top Statements</span> Ranked from high to low impact"
+blksize=obj.params.f4;
+let hwsql=0,hwbool=0;
+if(tab.rows.length < 2)
+tab.tBodies[0].innerHTML="No pg_stat_statements or pg_stat_monitor info found"
+else{
+trs=tab.rows;
+for (let tr of trs){
+sql=tr.cells[1];
+hwbool=0;
+if (sql.innerText.length > 10 ){ sql.title = sql.innerText; sql.innerText = sql.innerText.substring(0, 100); }
+let cel=tr.cells[2];
+if ( cel.innerText > 10) cel.classList.add("lime");
+cel=tr.cells[4];
+if ( cel.innerText > 60000 ){ cel.classList.add("warn"); hwbool++; }
+else if ( cel.innerText > 10000 ) cel.classList.add("lime");
+cel=tr.cells[6];
+if ( cel.innerText.trim() != "" && cel.innerText < 50) cel.classList.add("warn");
+[5,7,8,9,10].forEach(function(num){
+cel=tr.cells[num];
+cel.title = bytesToSize(Number(cel.innerText*blksize));
+if (cel.innerText > 12800){ cel.classList.add("warn"); hwbool++; }
+else if (cel.innerText > 4096) cel.classList.add("lime");
+});
+if (hwbool > 0) hwsql++;
+}
+setTitles(trs[0],["Weighted Dense Ranking. 1 has the highest impact","SQL Statement","SQL workload / Total workload %","Number of execution of the statement",
+"Avg. execution time of the statement (ms)","Average Reads (Blocks)","Cache Hit %","Avg. Dirtied Pages","Avg. Written Pages","Avg. Temp Pages Read","Avg. Temp Pages Written"]);
+if (hwsql > 0) strfind += "<li><b>"+ hwsql +" High impact SQL statements found.</b> Please refer <a href=#tblstmnt>Top Statements</a> section for details. Consider optimizing them</li>";
+}}
+function checkchkpntbgwrtr(){
+tab=document.getElementById("tblchkpnt")
+tab.caption.innerHTML="<span>BGWriter & Checkpointer</span>"
+trs=tab.rows;
+setTitles(trs[0],["Forced Checkpoint; Checkpoint triggered by xlog/wal; Need to adjust the max_wal_size","Average Minutes between Checkpoints","Average Write time of a checkpoint",
+"Average Disk sync time of a checkpoint","","","","","","","","Dirty buffers cleaned by Checkpointer","Dirty buffers cleaned by BGWriter","Dirty buffers cleaned by Session backends",
+"Percentage of bgwriter runs results in a halt","Percentage of bgwriter halts are due to hitting on bgwriter_lru_maxpages limit","Number of days before stats have been reset"]);
+if (trs.length > 1){
+tr=trs[1]
+if (tr.cells[0].innerText > 10){
+tr.cells[0].classList.add("high"); tr.cells[0].title="More than 10% of forced checkpoints is not desirable, increase max_wal_size";
+}
+if(tr.cells[1].innerText < 10 ){
+tr.cells[1].classList.add("high"); tr.cells[1].title="checkpoints are too frequent. Tune the checkpoint related parameters to reduce the frequency";
+}
+if(tr.cells[3].innerText > 0.04 ){
+tr.cells[3].classList.add("high"); tr.cells[3].title="Checkpoint Sync time is high, Suspected slow storage. consider using faster storage";
+strfind += "<li><b>Indications of Storage performance issue.</b> High checkpoint sync time. Consider performing benchmarking of storage.</li>";
+}
+if(tr.cells[11].innerText > 50){
+tr.cells[11].classList.add("high"); tr.cells[11].title="Checkpointer is taking high load of cleaning dirty buffers";
+}
+if(tr.cells[13].innerText > tr.cells[12].innerText && tr.cells[13].innerText > 20 ){
+tr.cells[12].classList.add("high"); tr.cells[12].title="Bgwriter should be cleaning more pages than backends.";
+if (tr.cells[13].innerText > 30){ tr.cells[13].classList.add("high"); tr.cells[13].title="too many dirty pages cleaned by backends";
+strfind += "<li>High <b>memory pressure</b>. Consider increasing RAM and shared_buffers</li>"; }
+if(tr.cells[12].innerText < 20){
+tr.cells[12].classList.add("high"); tr.cells[12].title+="Bgwriter is not efficient";
+if(tr.cells[14].innerText > 30){
+tr.cells[14].classList.add("high"); tr.cells[14].title="bgwriter could run more frequently. reduce bgwriter_delay";
+}
+if(tr.cells[15].innerText > 10){
+let param = params.find(p => p.param === "bgwriter_lru_maxpages");
+param["suggest"] = Math.ceil((parseInt(param["val"]) + tr.cells[15].innerText/15*100)/100)*100;
+evalParam("bgwriter_lru_maxpages");
+tr.cells[15].classList.add("high"); tr.cells[15].title="bgwriter halts too frequently. increase bgwriter_lru_maxpages";
+}
+}
+}
+if (tr.cells[16].innerText.trim() == "" || tr.cells[16].innerText < 1 ){
+tr.cells[16].classList.add("high"); tr.cells[16].title="sufficient bgwriter stats are not available";
+document.getElementById("tblchkpnt").classList.add("high");
+document.getElementById("tblchkpnt").title = "Sufficient bgwriter stats are not available. This could happen if data is collected immediately after the stats reset or a crash. At least one day of stats are required to do meaningful calculations";
+}
+if( tr.cells[16].innerText > 45 ){
+tr.cells[16].classList.add("high"); tr.cells[16].title="Statistics of long-term avarage won't be helpful. Please consider resetting. 1 week is ideal";
+}
+}}
+function checkiostat(){
+tab=document.getElementById("tbliostat")
+tab.caption.innerHTML="<span>IO Statistics</span>"
+if (tab.rows.length > 1){
+trs=tab.rows;
+if (trs[0].cells.length < 12){
+setTitles(trs[0],["Type of Backend Process","Average Bytes read per day","Average Bytes written (OS buffer) per day","Average Bytes flushed to disk per day","Average Bytes of file extends per day","Average number of times a block was found in shared buffer buffer per day",
+"Average Number of times in a day, a block has been written out from a shared or local buffer in order to make it available for another",
+"Average bumber of times in a day, buffer in ring buffer was reused as part of an I/O operation in the bulkread, bulkwrite, or vacuum",
+"Average number of fsyncs in a day"]);
+} else {
+setTitles(trs[0],["Type of Backend Process","Read requests per day","Read Bytes per day","Write requests to OS per day", "Write Bytes to OS per day","Bytes flushed to disk per day","File extend requests per day","Bytes of file extends per day","Average number of times a block was found in shared buffer buffer per day",
+"Average Number of times in a day, a block has been written out from a shared or local buffer in order to make it available for another",
+"Average bumber of times in a day, buffer in ring buffer was reused as part of an I/O operation in the bulkread, bulkwrite, or vacuum",
+"Average number of fsyncs in a day"]);
+}
+for (let tr of trs){
+}
+}else tab.tBodies[0].innerHTML="IO statistics is available for PostgreSQL 16 and above"
+}
+function checkreplstat(){
+tab=document.getElementById("tblreplstat")
+tab.caption.innerHTML="<span>Replication</span>"
+let strReps = 0;
+let param = params.find(p => p.param === "hot_standby_feedback");
+if (typeof param === "undefined") param = {};
+if (tab.rows.length > 1){
+for(var i=1;i<tab.rows.length;i++){
+row=tab.rows[i];
+if (row.cells[3].innerText == "streaming") strReps++;
+[4,5,6,7,16,17].forEach(function(num){ cell=row.cells[num]; cell.title=bytesToSize(Number(cell.innerText),1024);
+if(cell.innerText > 104857600){
+cell.classList.add("warn");
+}else{
+cell.classList.add("lime");
+}
+});
+[14,15].forEach(function(num){ if(row.cells[num].innerText > 20) row.cells[num].classList.add("warn"); });
+if ((obj.primary && (row.cells[13].innerText == "f" || row.cells[2].innerText == "")) || (!obj.primary && row.cells[13].innerText == "f" && row.cells[14].innerText > 1000 )) {
+row.cells[8].classList.add("high");
+row.cells[8].title="Abandoned replication slot";
+document.getElementById("finditem").innerHTML += "<li> Abandoned replication slot : <b>" + row.cells[8].innerText + "</b> found. This can cause unwanted WAL retention" ;
+}
+}
+if (strReps > 0 && param["val"] == "off" ){ strfind += "<li>Streaming replication(s) found. However, <b>hot_standby_feedback is off</b>. High chance of query cancellation at standby</li>";
+param["suggest"] = "on";
+}
+}else{
+tab.tBodies[0].innerHTML="No Replication data found"
+if (!obj.primary && param["val"] == "off" ) strfind += "<li><b>hot_standby_feedback is off</b>. High chance of query cancellation at standby</li></li>";
+}
+}
+document.onkeyup = function(e) {
+if (e.altKey && e.which === 73) document.getElementById("topics").scrollIntoView({behavior: "smooth"});
+}
+</script>
+</html>

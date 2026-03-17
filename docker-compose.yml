@@ -81,8 +81,49 @@ services:
       postgres:
         condition: service_healthy   # don't start until postgres passes healthcheck
 
+  # ── PostgreSQL streaming replica (lab5 only) ────────────────────────────────
+  # Only starts when the "replication" profile is active:
+  #   docker compose --profile replication up -d postgres-replica
+  # OR via:   make lab5
+  postgres-replica:
+    image: postgres:16-bookworm
+    profiles: ["replication"]
+    container_name: pg_gather_replica
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-pgadmin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pgadmin123}
+      POSTGRES_DB:       ${POSTGRES_DB:-labdb}
+      PGDATA:            /var/lib/postgresql/data
+      PRIMARY_HOST:      ${PG_CONTAINER:-pg_gather_db}
+      PRIMARY_PORT:      5432
+
+    # Use our custom entrypoint that runs pg_basebackup on first boot
+    entrypoint: ["/replica_entrypoint.sh"]
+
+    volumes:
+      - pg_gather_replica_data:/var/lib/postgresql/data
+      - ./postgres/replica_entrypoint.sh:/replica_entrypoint.sh
+
+    ports:
+      - "${REPLICA_PORT:-5433}:5432"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pgadmin} -d ${POSTGRES_DB:-labdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s   # pg_basebackup takes time on first boot
+
 # Named volume definition — Docker manages the lifecycle.
 # `docker compose down` leaves the volume intact; `down -v` removes it.
 volumes:
   pg_gather_data:
     name: ${PG_DATA_VOLUME:-pg_gather_data}
+  pg_gather_replica_data:
+    name: pg_gather_replica_data
