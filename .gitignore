@@ -1,0 +1,25 @@
+# Environment secrets — never commit the real .env
+.env
+
+# pg_gather reports generated at runtime
+# reports/*.html
+# reports/*.tsv
+# reports/*.json
+# reports/*.txt
+
+# Postgres WAL and data (if bind-mounted instead of named volume)
+postgres/data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,88 @@
+# All secrets/ports come from .env (copy .env.example → .env to get started)
+
+services:
+  postgres:
+    build:
+      context: ./postgres          # Dockerfile lives here
+      dockerfile: Dockerfile
+    container_name: ${PG_CONTAINER:-pg_gather_db}
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pgadmin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pgadmin123}
+      POSTGRES_DB: ${POSTGRES_DB:-labdb}
+      # Tell Postgres where the include_dir of custom conf snippets lives.
+      # This is picked up by the default postgresql.conf inside the image.
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+
+    # -c hba_file= is a valid GUC so it can be passed on the command line.
+    # include_dir is a postgresql.conf *directive*, not a GUC — it cannot be
+    # passed with -c.  Instead, 00_config.sh (in initdb.d) appends it to
+    # $PGDATA/postgresql.conf before the real server first boots.
+    command: >
+      postgres
+        -c hba_file=/etc/postgresql/pg_hba.conf
+
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      # Named volume keeps data across `docker compose down`
+      - ${PG_DATA_VOLUME:-pg_gather_data}:/var/lib/postgresql/data
+
+      # Bind-mount the reports folder so generated HTML lands on the host
+      - ./reports:/reports
+
+      # Bind-mount logs folder for easy tail/grep from the host
+      - ./logs:/logs
+
+    healthcheck:
+      # pg_isready exits 0 only when Postgres is accepting connections
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pgadmin} -d ${POSTGRES_DB:-labdb}"]
+      interval: 10s      # check every 10 s
+      timeout: 5s        # fail the check if it takes > 5 s
+      retries: 5         # mark unhealthy after 5 consecutive failures
+      start_period: 20s  # grace period while Postgres initialises on first run
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"   # rotate log file at 10 MB
+        max-file: "3"     # keep the last 3 rotated files
+
+  # ── pg_gather runner ────────────────────────────────────────────────────────
+  # This is a one-shot service: it runs setup.sh, writes a report, and exits.
+  # It does NOT restart automatically.
+  #
+  # Run it with:
+  #   docker compose run --rm pg_gather          ← run setup.sh
+  #   docker compose run --rm pg_gather bash     ← interactive shell
+  pg_gather:
+    build:
+      context: ./pg_gather
+      dockerfile: Dockerfile
+    container_name: pg_gather_runner
+    restart: "no"             # one-shot: exits after setup.sh completes
+
+    # pg_gather runner needs these to build the psql connection string
+    environment:
+      PGHOST:     ${PG_CONTAINER:-pg_gather_db}   # reach postgres by container name
+      PGPORT:     5432
+      PGUSER:     ${POSTGRES_USER:-pgadmin}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-pgadmin123}
+      PGDATABASE: ${POSTGRES_DB:-labdb}
+
+    volumes:
+      # Reports land here — same bind-mount as the postgres service
+      - ./reports:/reports
+
+    depends_on:
+      postgres:
+        condition: service_healthy   # don't start until postgres passes healthcheck
+
+# Named volume definition — Docker manages the lifecycle.
+# `docker compose down` leaves the volume intact; `down -v` removes it.
+volumes:
+  pg_gather_data:
+    name: ${PG_DATA_VOLUME:-pg_gather_data}
