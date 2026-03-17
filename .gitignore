@@ -1,5 +1,5 @@
 # Environment secrets — never commit the real .env
-.env
+# .env
 
 # pg_gather reports generated at runtime
 # reports/*.html
